@@ -66,7 +66,7 @@ const LoginForm = class extends Component {
                                 <div className="form-group">
                                     <div className="col-sm-offset-2 col-sm-10">
                                         <button type="submit" className="btn btn-default btn-auth">Sign in</button>
-                                        <a href="" className="forgot-pass">Forgot password?</a>
+                                        <a href="/link" className="forgot-pass">Forgot password?</a>
                                     </div>
                                 </div>
                             </form>
