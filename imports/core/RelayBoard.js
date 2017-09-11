@@ -12,6 +12,19 @@ var RelayBoard = class extends EventEmitter {
 
     setStatus(status) {
         this.status = status;
+        this.timestamp = Date.now();
+    }
+
+    getStatus() {
+        return this.status;
+    }
+
+    getOnline() {
+        return Date.now()-this.timestamp<10000;
+    }
+
+    getTimestamp() {
+        return this.timestamp;
     }
 
 }

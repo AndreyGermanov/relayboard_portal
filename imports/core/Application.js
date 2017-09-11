@@ -53,13 +53,30 @@ const Application = class extends EventEmitter {
                 if (params.id && params.status) {
                     if (typeof(this.relayboards[params.id]) != 'undefined' && this.relayboards[params.id]) {
                         this.relayboards[params.id].setStatus(params.status);
-                        console.log(params.status);
                         return JSON.stringify({status:'ok'})
                     } else {
                         return JSON.stringify({status:'error',message:'Specified relayboard not found'})
                     }
                 } else {
                     return JSON.stringify({status:'error',message:'Invalid request'})
+                }
+            },
+            'getStatus': (params) => {
+                if (Meteor.userId()) {
+                    var relayboards = Meteor.user().relayboards;
+                    result = [];
+                    for (var i in relayboards) {
+                        if (typeof(relayboards[i])!='undefined' && relayboards[i]) {
+                            var relayboard = this.relayboards[relayboards[i]];
+                            result.push({
+                                id: relayboards[i],
+                                online: relayboard.getOnline(),
+                                status: relayboard.getStatus(),
+                                timestamp: relayboard.getTimestamp()
+                            });
+                        }
+                    }
+                    return JSON.stringify(result);
                 }
             }
         })
