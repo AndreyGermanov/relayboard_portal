@@ -3,6 +3,7 @@ import {Accounts} from 'meteor/accounts-base';
 import {Meteor} from 'meteor/meteor';
 import RelayBoard from './RelayBoard';
 import RelayBoardsDB  from '../models/RelayBoard';
+import _ from 'lodash';
 
 const Application = class extends EventEmitter {
     constructor() {
@@ -53,7 +54,22 @@ const Application = class extends EventEmitter {
                 if (params.id && params.status) {
                     if (typeof(this.relayboards[params.id]) != 'undefined' && this.relayboards[params.id]) {
                         this.relayboards[params.id].setStatus(params.status);
-                        return JSON.stringify({status:'ok'})
+                        var commands = {};
+                        if (params.command_responses && _.toArray(params.command_responses).length) {
+                            this.relayboards[params.id].processCommandResponses(params.command_responses);
+                        };
+                        for (var i in this.relayboards[params.id].commands_queue) {
+                            if (!this.relayboards[params.id].commands_queue[i].sent) {
+                                commands[i] = {
+                                    request_id: this.relayboards[params.id].commands_queue[i].request_id,
+                                    request_type: this.relayboards[params.id].commands_queue[i].request_type,
+                                    command: this.relayboards[params.id].commands_queue[i].command,
+                                    arguments: this.relayboards[params.id].commands_queue[i].arguments
+                                }
+                                this.relayboards[params.id].commands_queue[i].sent = true;
+                            }
+                        }
+                        return JSON.stringify({status:'ok',commands:commands});
                     } else {
                         return JSON.stringify({status:'error',message:'Specified relayboard not found'})
                     }
@@ -64,19 +80,44 @@ const Application = class extends EventEmitter {
             'getStatus': (params) => {
                 if (Meteor.userId()) {
                     var relayboards = Meteor.user().relayboards;
-                    result = [];
+                    statuses = [];
+                    responses = {};
                     for (var i in relayboards) {
                         if (typeof(relayboards[i])!='undefined' && relayboards[i]) {
                             var relayboard = this.relayboards[relayboards[i]];
-                            result.push({
+                            statuses.push({
                                 id: relayboards[i],
                                 online: relayboard.getOnline(),
                                 status: relayboard.getStatus(),
                                 timestamp: relayboard.getTimestamp()
                             });
+                            responses[relayboards[i]] = {};
+                            for (var i1 in relayboard.command_responses) {
+                                responses[relayboards[i]][i1] = relayboard.command_responses[i1];
+                            }
                         }
                     }
-                    return JSON.stringify(result);
+                    relayboard.command_responses = {};
+                    return JSON.stringify({statuses:statuses,command_responses:responses});
+                }
+            },
+            'switchRelay': (params) => {
+                if (params.id && params.number && params.mode) {
+                    if (Meteor.userId()) {
+                        var relayboards = Meteor.user().relayboards;
+                        if (relayboards.indexOf(params.id)!=-1 && this.relayboards[params.id] && typeof(this.relayboards[params.id]) != 'undefined') {
+                            var request_id = params.id+'_'+Date.now()+'_'+params.mode+'_'+params.number;
+                            var command = {
+                                request_type: 'serial',
+                                request_id: request_id,
+                                command: params.mode,
+                                arguments: params.number
+                            };
+                            this.relayboards[params.id].dispatchCommand(command, function(result) {
+                            });
+                            return JSON.stringify({status:'ok',request_id:request_id});
+                        }
+                    }
                 }
             }
         })
