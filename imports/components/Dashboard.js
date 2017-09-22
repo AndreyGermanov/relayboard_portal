@@ -17,7 +17,7 @@ const Dashboard = class extends Component {
                     };
                     if (relayboard.online) {
                         link = <a  key={'link_'+index}>
-                            <span  key={'img_'+index} className="fa fa-power-off relay-cell-img" style={{color:color}}></span>
+                            <span onClick={this.props.onRelayClick.bind(this,relayboard._id,command,index+1)} key={'img_'+index} className="fa fa-power-off relay-cell-img relay-cell-img-online" style={{color:color}}></span>
                         </a>
                     };
                     return (

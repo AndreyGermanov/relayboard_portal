@@ -22,7 +22,12 @@ const mapTrackerToProps = (state,props) => {
         }
 }
 const mapDispatchToProps = (dispatch) => {
-    return {};
+    return {
+        onRelayClick: (id,command,number) => {
+            Meteor.call('switchRelay',{id:id,number:number,mode:command},function(err,result) {
+            });
+        }
+    };
 }
 
 var DashboardContainer = connect(mapTrackerToProps,mapStateToProps,mapDispatchToProps)(Dashboard);

@@ -35,6 +35,9 @@
 
 .relay-cell-img {
     font-size: 64px;
+}
+
+.relay-cell-img-online {
     cursor: pointer;
 }
 
