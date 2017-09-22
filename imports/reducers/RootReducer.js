@@ -4,11 +4,14 @@ import ResetPasswordLinkFormReducer from './ResetPasswordLinkFormReducer';
 import ResetPasswordFormReducer from './ResetPasswordFormReducer';
 
 var RootReducer = (state,action) => {
-    if (typeof(state) == 'undefined') {
+    if (typeof(state) == 'undefined' || !state) {
         state = {
             LoginForm:{},
             ResetPasswordLinkForm:{},
-            ResetPasswordForm:{}
+            ResetPasswordForm:{},
+            Dashboard: {
+                errors: {}
+            }
         }
     }
     var newState = _.cloneDeep(state);

@@ -19,6 +19,20 @@ const Application = class extends EventEmitter {
                 url;
         }
 
+        Meteor.publish('relayboards', function() {
+            if (Meteor.userId()) {
+                var user = Meteor.users.find({'_id':Meteor.userId()},{relayboards:1}).fetch();
+                user = user.shift();
+                var ids = [];
+                for (var i in user.relayboards) {
+                    ids.push(user.relayboards[i]);
+                }
+                return RelayBoardsDB.find({'_id':{$in:ids}});
+            } else {
+                this.ready();
+            }
+        })
+        
         Meteor.methods({
             'registerRelayBoard': (params) => {
                 if (Meteor.userId()) {
@@ -57,7 +71,7 @@ const Application = class extends EventEmitter {
                         var commands = {};
                         if (params.command_responses && _.toArray(params.command_responses).length) {
                             this.relayboards[params.id].processCommandResponses(params.command_responses);
-                        };
+                        }
                         for (var i in this.relayboards[params.id].commands_queue) {
                             if (!this.relayboards[params.id].commands_queue[i].sent) {
                                 commands[i] = {

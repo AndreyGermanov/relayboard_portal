@@ -15,3 +15,34 @@
     margin-right: auto;
     width: 50%
 }
+
+.al-sidebar {
+    top:0px;
+}
+
+.al-main {
+    padding-top: 18px;
+}
+
+.relay-cell {
+    padding:10px;
+}
+
+.relay-cell > div {
+    text-align: center;
+    padding-bottom: 7px;
+}
+
+.relay-cell-img {
+    font-size: 64px;
+    cursor: pointer;
+}
+
+.relay-cell-text {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.btn-default {
+    color: white !important;
+}

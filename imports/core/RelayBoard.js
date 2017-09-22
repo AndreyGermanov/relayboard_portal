@@ -1,4 +1,6 @@
 import {EventEmitter} from 'events';
+import RelayBoardsDB  from '../models/RelayBoard';
+import {Meteor} from 'meteor/meteor';
 
 var RelayBoard = class extends EventEmitter {
 
@@ -10,12 +12,13 @@ var RelayBoard = class extends EventEmitter {
         for (var i in options) {
             this[i] = options[i];
         }
-        setInterval(this.handleCommandQueue.bind(this),5000);
+        Meteor.setInterval(this.handleCommandQueue.bind(this),5000);
     }
 
     setStatus(status) {
         this.status = status;
         this.timestamp = Date.now();
+        RelayBoardsDB.update({'_id':this.id},{'$set':{status:this.status.join(','),timestamp:this.timestamp}});
     }
 
     getStatus() {
@@ -23,6 +26,7 @@ var RelayBoard = class extends EventEmitter {
     }
 
     getOnline() {
+        RelayBoardsDB.update({'_id':this.id},{'$set':{online:Date.now()-this.timestamp<10000}});
         return Date.now()-this.timestamp<10000;
     }
 
@@ -47,6 +51,7 @@ var RelayBoard = class extends EventEmitter {
     }
 
     handleCommandQueue() {
+        this.getOnline();
         for (var i in this.commands_queue) {
             if (Date.now() - this.commands_queue[i].timestamp > 20000) {
                 delete this.commands_queue[i];

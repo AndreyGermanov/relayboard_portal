@@ -2,7 +2,7 @@ import {Meteor} from 'meteor/meteor';
 import React,{Component} from 'react';
 import { Router, Route } from 'react-router';
 import createBrowserHistory from 'history/createBrowserHistory';
-import Dashboard from './Dashboard';
+import Dashboard from '../containers/DashboardContainer';
 import Users from './Users';
 import LoginForm from '../containers/LoginFormContainer';
 import ResetPasswordLinkForm from '../containers/ResetPasswordLinkFormContainer';
