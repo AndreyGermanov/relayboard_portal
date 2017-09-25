@@ -51,13 +51,22 @@ const Application = class extends EventEmitter {
                     return JSON.stringify({status:'error',message:'Not authenticated'})
                 }
             },
+            'updateRelayBoardConfig': (params) => {
+                if (Meteor.userId()) {
+                    var id = params.id;
+                    if (this.relayboards[id] && typeof(this.relayboards[id]) != 'undefined') {
+                        this.relayboards[id].setConfig(params.config);
+                    }
+                    return JSON.stringify({status:'ok'})
+                }
+            },
             'unregisterRelayBoard': (params) => {
                 if (Meteor.userId()) {
                     var id = params.id;
                     if (this.relayboards[id]) {
                         delete this.relayboards[id];
                     }
-                    RelayBoardsDB.delete({_id:id});
+                    RelayBoardsDB.remove({_id:id});
                     Meteor.users.update({'relayboards':id},{'$pull':{'relayboards':id}});
                     return JSON.stringify({status:'ok'});
                 } else {

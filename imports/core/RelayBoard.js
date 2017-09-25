@@ -21,8 +21,18 @@ var RelayBoard = class extends EventEmitter {
         RelayBoardsDB.update({'_id':this.id},{'$set':{status:this.status.join(','),timestamp:this.timestamp}});
     }
 
+    setConfig(config) {
+        this.config = config;
+        this.config_timestamp = Date.now();
+        RelayBoardsDB.update({'_id':this.id},{'$set':{config:this.config,config_timestamp:this.config_timestamp}});
+    }
+
     getStatus() {
         return this.status;
+    }
+
+    getConfig() {
+        return this.config;
     }
 
     getOnline() {

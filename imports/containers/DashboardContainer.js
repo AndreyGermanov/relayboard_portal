@@ -18,7 +18,7 @@ const mapTrackerToProps = (state,props) => {
         Meteor.subscribe('Meteor.users');
         Meteor.subscribe('relayboards');
         return {
-            relayboards: RelayboardModel.find({},{'_id':1,'status':1,'timestamp':1}).fetch()
+            relayboards: RelayboardModel.find({},{'_id':1,'status':1,'timestamp':1,'config':1}).fetch()
         }
 }
 const mapDispatchToProps = (dispatch) => {
@@ -26,6 +26,12 @@ const mapDispatchToProps = (dispatch) => {
         onRelayClick: (id,command,number) => {
             Meteor.call('switchRelay',{id:id,number:number,mode:command},function(err,result) {
             });
+        },
+        onRemoveRelayboardClick: (id) => {
+            if (confirm('Are you sure?')) {
+                Meteor.call('unregisterRelayBoard', {id: id}, function (err, result) {
+                });
+            }
         }
     };
 }
