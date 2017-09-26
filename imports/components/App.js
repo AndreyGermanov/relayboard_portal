@@ -19,7 +19,7 @@ var App = class extends Component {
                 <Provider store={Store.store}>
                     <Router history={browserHistory}>
                         <main>
-                            <aside className="al-sidebar">
+                            <aside className="al-sidebar" style={{display:'none'}}>
                                 <ul className="al-sidebar-list">
                                     <li className="al-sidebar-list-item">
                                         <Link className="al-sidebar-list-link" to={{pathname:'/'}}>

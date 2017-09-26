@@ -3,6 +3,7 @@ import {Accounts} from 'meteor/accounts-base';
 import {Meteor} from 'meteor/meteor';
 import RelayBoard from './RelayBoard';
 import RelayBoardsDB  from '../models/RelayBoard';
+import SensorDataDB from '../models/SensorData';
 import _ from 'lodash';
 
 const Application = class extends EventEmitter {
@@ -28,6 +29,20 @@ const Application = class extends EventEmitter {
                     ids.push(user.relayboards[i]);
                 }
                 return RelayBoardsDB.find({'_id':{$in:ids}});
+            } else {
+                this.ready();
+            }
+        })
+
+        Meteor.publish('sensor_data', function() {
+            if (Meteor.userId()) {
+                var user = Meteor.users.find({'_id':Meteor.userId()},{relayboards:1}).fetch();
+                user = user.shift();
+                var ids = [];
+                for (var i in user.relayboards) {
+                    ids.push(user.relayboards[i]);
+                }
+                return SensorDataDB.find({relayboard_id:{$in:ids}},{sort:[['timestamp','asc']]});
             } else {
                 this.ready();
             }
@@ -76,7 +91,7 @@ const Application = class extends EventEmitter {
             'updateRelayBoardStatus': (params) => {
                 if (params.id && params.status) {
                     if (typeof(this.relayboards[params.id]) != 'undefined' && this.relayboards[params.id]) {
-                        this.relayboards[params.id].setStatus(params.status);
+                        this.relayboards[params.id].setStatus(params.status,params.timestamp);
                         var commands = {};
                         if (params.command_responses && _.toArray(params.command_responses).length) {
                             this.relayboards[params.id].processCommandResponses(params.command_responses);
