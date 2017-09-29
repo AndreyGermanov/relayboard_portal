@@ -18,7 +18,7 @@ const Application = class extends EventEmitter {
             return "Hey "+user.username+"!\n\n "+
                 "To reset your password, simply click the link below:\n\n"+
                 url;
-        }
+        };
 
         Meteor.publish('relayboards', function() {
             if (Meteor.userId()) {
@@ -32,7 +32,7 @@ const Application = class extends EventEmitter {
             } else {
                 this.ready();
             }
-        })
+        });
 
         Meteor.publish('sensor_data', function() {
             if (Meteor.userId()) {
@@ -46,33 +46,35 @@ const Application = class extends EventEmitter {
             } else {
                 this.ready();
             }
-        })
+        });
         
         Meteor.methods({
             'registerRelayBoard': (params) => {
                 if (Meteor.userId()) {
                     var id = params.id;
                     if (!this.relayboards[id] || typeof(this.relayboards[id]) == 'undefined') {
-                        params.options['_id'] = id;
+                        params.options._id = id;
                         RelayBoardsDB.insert(params.options);
                         Meteor.users.update({_id: Meteor.userId()}, {'$addToSet': {'relayboards': id}});
-                        params.options['application'] = self;
+                        params.options.application = self;
                         this.relayboards[id] = new RelayBoard(id,params.config);
                         return JSON.stringify({status:'ok'});
                     } else {
                         return JSON.stringify({status:'ok'});
                     }
                 } else {
-                    return JSON.stringify({status:'error',message:'Not authenticated'})
+                    return JSON.stringify({status:'error',message:'Not authenticated'});
                 }
             },
             'updateRelayBoardConfig': (params) => {
                 if (Meteor.userId()) {
                     var id = params.id;
+                    params.config.pins = _.orderBy(params.config.pins,['number'],['asc']);
                     if (this.relayboards[id] && typeof(this.relayboards[id]) != 'undefined') {
+                        this.relayboards[id].setConfigUpdateTime(params.lastConfigUpdateTime);
                         this.relayboards[id].setConfig(params.config);
                     }
-                    return JSON.stringify({status:'ok'})
+                    return JSON.stringify({status:'ok'});
                 }
             },
             'unregisterRelayBoard': (params) => {
@@ -85,7 +87,7 @@ const Application = class extends EventEmitter {
                     Meteor.users.update({'relayboards':id},{'$pull':{'relayboards':id}});
                     return JSON.stringify({status:'ok'});
                 } else {
-                    return JSON.stringify({status:'error',message:'Not authenticated'})
+                    return JSON.stringify({status:'error',message:'Not authenticated'});
                 }
             },
             'updateRelayBoardStatus': (params) => {
@@ -103,16 +105,34 @@ const Application = class extends EventEmitter {
                                     request_type: this.relayboards[params.id].commands_queue[i].request_type,
                                     command: this.relayboards[params.id].commands_queue[i].command,
                                     arguments: this.relayboards[params.id].commands_queue[i].arguments
-                                }
+                                };
                                 this.relayboards[params.id].commands_queue[i].sent = true;
                             }
                         }
-                        return JSON.stringify({status:'ok',commands:commands});
+                        return JSON.stringify({status:'ok',commands:commands,lastConfigUpdateTime:this.relayboards[params.id].getConfigUpdateTime()});
                     } else {
-                        return JSON.stringify({status:'error',message:'Specified relayboard not found'})
+                        return JSON.stringify({status:'error',message:'Specified relayboard not found'});
                     }
                 } else {
-                    return JSON.stringify({status:'error',message:'Invalid request'})
+                    return JSON.stringify({status:'error',message:'Invalid request'});
+                }
+            },
+            'getConfig': (params) => {
+                if (Meteor.userId()) {
+                    var relayboards = Meteor.user().relayboards;
+                    results = [];
+                    for (var i in relayboards) {
+                        if (typeof(relayboards[i]) != 'undefined' && relayboards[i]) {
+                            var relayboard = this.relayboards[relayboards[i]];
+                            results.push({
+                                id: relayboard.id,
+                                config: relayboard.getConfig()
+                            });
+                        }
+                    }
+                    return JSON.stringify({status:'ok',relayboards:results});
+                } else {
+                    return JSON.stringify({status:'error',message:'Authentication error'});
                 }
             },
             'getStatus': (params) => {
@@ -123,19 +143,23 @@ const Application = class extends EventEmitter {
                     for (var i in relayboards) {
                         if (typeof(relayboards[i])!='undefined' && relayboards[i]) {
                             var relayboard = this.relayboards[relayboards[i]];
-                            statuses.push({
-                                id: relayboards[i],
+                            var status = {
+                                id: relayboard.id,
                                 online: relayboard.getOnline(),
                                 status: relayboard.getStatus(),
                                 timestamp: relayboard.getTimestamp()
-                            });
+                            };
+                            if (typeof(params.lastConfigUpdateTime)!='undefined' && params.lastConfigUpdateTime<relayboard.lastConfigUpdateTime) {
+                                status.config = relayboard.getConfig();
+                            }
+                            statuses.push(status);
                             responses[relayboards[i]] = {};
                             for (var i1 in relayboard.command_responses) {
                                 responses[relayboards[i]][i1] = relayboard.command_responses[i1];
                             }
+                            relayboard.command_responses = {};
                         }
                     }
-                    relayboard.command_responses = {};
                     return JSON.stringify({statuses:statuses,command_responses:responses});
                 }
             },
@@ -158,8 +182,8 @@ const Application = class extends EventEmitter {
                     }
                 }
             }
-        })
-    };
+        });
+    }
 
     run() {
         var relayboards = RelayBoardsDB.find().fetch();
@@ -167,7 +191,7 @@ const Application = class extends EventEmitter {
             this.relayboards[item._id] = new RelayBoard(item._id,item);
         },this);
     }
-}
+};
 
 export default new Application();
 

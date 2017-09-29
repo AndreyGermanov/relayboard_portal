@@ -6,6 +6,6 @@ var Store = class {
     constructor() {
         this.store = createStore(RootReducer,applyMiddleware(thunkMiddleware));
     }
-}
+};
 
 export default new Store();

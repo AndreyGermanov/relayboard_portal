@@ -15,7 +15,7 @@ var RootReducer = (state,action) => {
                 relayboards: {},
                 errors: {}
             }
-        }
+        };
     }
     var newState = _.cloneDeep(state);
     newState.LoginForm = LoginFormReducer(state.LoginForm,action);
@@ -24,6 +24,6 @@ var RootReducer = (state,action) => {
     newState.Dashboard = DashboardReducer(state.Dashboard,action);
 
     return newState;
-}
+};
 
 export default RootReducer;

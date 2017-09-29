@@ -1,4 +1,4 @@
-import { Meteor } from 'meteor/meteor'
+import { Meteor } from 'meteor/meteor';
 import {connect} from 'react-redux-meteor';
 import SensorDataModel from '../models/SensorData';
 import Relay from '../components/Relay';
@@ -13,16 +13,16 @@ const mapStateToProps = (state,ownProps) => {
         index: ownProps.index,
         online: ownProps.online,
         timestamp: moment(ownProps.timestamp).format('HH:mm:ss')
-    }
+    };
 };
 
 const mapTrackerToProps = (state,props) => {
-        Meteor.subscribe('sensor_data');
-        return {
-            sensor_data: SensorDataModel.find({relayboard_id:props.relayboard_id,pin:props.pin},
-                {fields:{'_id':1,'status':1,'timestamp':1,'config':1}})
-                .fetch()
-        }
+    Meteor.subscribe('sensor_data');
+    return {
+        sensor_data: SensorDataModel.find({relayboard_id:props.relayboard_id,pin:props.pin},
+            {fields:{'_id':1,'status':1,'timestamp':1,'config':1}})
+            .fetch()
+    };
 };
 
 const mapDispatchToProps = (dispatch) => {
@@ -32,13 +32,11 @@ const mapDispatchToProps = (dispatch) => {
             });
         },
         onRelayChartButtonClick: (relayboard_id,index) => {
-            dispatch(dashboardActions.setCurrentRelayboardChart(relayboard_id,index))
+            dispatch(dashboardActions.setCurrentRelayboardChart(relayboard_id,index));
         }
-    }
+    };
 };
 
 var RelayContainer = connect(mapTrackerToProps,mapStateToProps,mapDispatchToProps)(Relay);
 
 export default RelayContainer;
-
-

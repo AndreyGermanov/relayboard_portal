@@ -7,7 +7,7 @@ var DashboardReducer = (state,action) => {
         state = {
             relayboards: {},
             errors: {}
-        }
+        };
     }
     var newState = _.cloneDeep(state);
     switch (action.type) {
@@ -20,6 +20,6 @@ var DashboardReducer = (state,action) => {
         default:
     }
     return newState;
-}
+};
 
 export default DashboardReducer;

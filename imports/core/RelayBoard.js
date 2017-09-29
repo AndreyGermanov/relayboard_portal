@@ -2,6 +2,8 @@ import {EventEmitter} from 'events';
 import RelayBoardsDB  from '../models/RelayBoard';
 import SensorData from '../models/SensorData';
 import {Meteor} from 'meteor/meteor';
+import moment from 'moment';
+import _ from 'lodash';
 
 var RelayBoard = class extends EventEmitter {
 
@@ -10,6 +12,7 @@ var RelayBoard = class extends EventEmitter {
         this.id = id;
         this.commands_queue = {};
         this.command_responses = {};
+        this.lastConfigUpdateTime = Date.now();
         for (var i in options) {
             this[i] = options[i];
         }
@@ -20,23 +23,35 @@ var RelayBoard = class extends EventEmitter {
         if (this.status) {
             for (var i in status) {
                 if (status[i] != this.status[i]) {
-                    if (this.config.pins[i].type == 'relay') {
-                        SensorData.insert({pin: parseInt(this.config.pins[i].number), status: parseInt(status[i]), timestamp: timestamp,relayboard_id:this.id})
-                    } else if (this.config.pins[i].type == 'temperature') {
-                        var parts = status[i].split('|');
-                        var previous_parts = this.status[i].split('|');
-                        var record = {pin: parseInt(this.config.pins[i].number),timestamp:timestamp,relayboard_id:this.id};
-                        var changed = false;
-                        if (parts[0]!=previous_parts[0]) {
-                            record['temperature'] = parseFloat(parts[0]);
-                            changed = true;
-                        };
-                        if (parts[1]!=previous_parts[1]) {
-                            record['humidity'] = parseFloat(parts[1]);
-                            changed = true;
-                        };
-                        if (changed) {
-                            SensorData.insert(record);
+                    if (this.config.pins[i]) {
+                        if (this.config.pins[i].type == 'relay') {
+                            SensorData.insert({
+                                pin: parseInt(this.config.pins[i].number),
+                                status: parseInt(status[i]),
+                                timestamp: timestamp, relayboard_id: this.id
+                            });
+                        } else if (this.config.pins[i].type == 'temperature') {
+                            var parts = status[i].split('|');
+                            var record = {
+                                pin: parseInt(this.config.pins[i].number),
+                                timestamp: timestamp,
+                                relayboard_id: this.id
+                            };
+                            var changed = false;
+                            if (this.status && this.status[i]) {
+                                var previous_parts = this.status[i].split('|');
+                                if (parts[0] != previous_parts[0]) {
+                                    record.temperature = parseFloat(parts[0]);
+                                    changed = true;
+                                }
+                                if (parts[1] != previous_parts[1]) {
+                                    record.humidity = parseFloat(parts[1]);
+                                    changed = true;
+                                }
+                                if (changed) {
+                                    SensorData.insert(record);
+                                }
+                            }
                         }
                     }
                 }
@@ -58,6 +73,7 @@ var RelayBoard = class extends EventEmitter {
     }
 
     getConfig() {
+        this.config.pins = _.orderBy(this.config.pins,['number'],['asc']);
         return this.config;
     }
 
@@ -68,6 +84,14 @@ var RelayBoard = class extends EventEmitter {
 
     getTimestamp() {
         return this.timestamp;
+    }
+
+    setConfigUpdateTime(timestamp) {
+        this.lastConfigUpdateTime = timestamp;
+    }
+
+    getConfigUpdateTime() {
+        return this.lastConfigUpdateTime;
     }
 
     dispatchCommand(command,callback) {
@@ -94,7 +118,6 @@ var RelayBoard = class extends EventEmitter {
             }
         }
     }
-
-}
+};
 
 export default RelayBoard;

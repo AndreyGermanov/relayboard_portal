@@ -8,7 +8,7 @@ var ResetPasswordLinkFormReducer = (state,action) => {
             email: '',
             email_sent: false,
             errors: {}
-        }
+        };
     }
     var newState = _.cloneDeep(state);
     switch (action.type) {
@@ -18,7 +18,7 @@ var ResetPasswordLinkFormReducer = (state,action) => {
         case actions.types.SET_ERROR_MESSAGES:
             newState.errors = {};
             for (var i in action.errors) {
-                newState.errors[i] = action.errors[i]
+                newState.errors[i] = action.errors[i];
             }
             break;
         case actions.types.SET_EMAIL_SENT: {
@@ -28,6 +28,6 @@ var ResetPasswordLinkFormReducer = (state,action) => {
         default:
     }
     return newState;
-}
+};
 
 export default ResetPasswordLinkFormReducer;

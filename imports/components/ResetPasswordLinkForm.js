@@ -11,28 +11,29 @@ const ResetPasswordLinkForm = class extends Component {
                 message: ''
             }
         };
-        if (typeof(this.props.errors['email'])!='undefined' && this.props.errors['email']) {
-            fields['email'] = {
+        if (typeof(this.props.errors.email)!='undefined' && this.props.errors.email) {
+            fields.email = {
                 has_error_class: 'has-error',
-                placeholder: this.props.errors['email']
+                placeholder: this.props.errors.email
             };
         }
-        if (typeof(this.props.errors['general'])!='undefined' && this.props.errors['general']) {
-            fields['general'] = {
-                message: this.props.errors['general']
-            }
+        if (typeof(this.props.errors.general)!='undefined' && this.props.errors.general) {
+            fields.general = {
+                message: this.props.errors.general
+            };
         }
         if (!this.props.email_sent) {
             return (
+                /*jshint ignore:start */
                 <div className="outer">
                     <div className="middle">
                         <main className="auth-main inner">
                             <div className="auth-block">
                                 <h1>Enter your email address</h1>
                                 <div className="alert bg-danger"
-                                     style={{display:(fields['general'].message.length ? '':'none')}}>{fields['general'].message}</div>
+                                     style={{display:(fields.general.message.length ? '':'none')}}>{fields.general.message}</div>
                                 <form className="form-horizontal" onSubmit={this.props.onFormSubmit}>
-                                    <div className={"form-group "+fields['email'].has_error_class}>
+                                    <div className={"form-group "+fields.email.has_error_class}>
                                         <label htmlFor="email" className="col-sm-2 control-label">Email</label>
                                         <div className="col-sm-10">
                                             <div className="input-group">
@@ -41,7 +42,7 @@ const ResetPasswordLinkForm = class extends Component {
                                                     <i className="fa fa-user"></i>
                                                 </span>
                                                 <input type="email" id="email" className='form-control'
-                                                       placeholder={fields['email'].placeholder}
+                                                       placeholder={fields.email.placeholder}
                                                        value={this.props.email}
                                                        onChange={this.props.onChangeEmailField}/>
                                             </div>
@@ -59,9 +60,11 @@ const ResetPasswordLinkForm = class extends Component {
                         </main>
                     </div>
                 </div>
-            )
+                /*jshint ignore:end */
+            );
         } else {
             return (
+                /*jshint ignore:start */
                 <div className="outer">
                     <div className="middle">
                         <main className="auth-main inner">
@@ -78,7 +81,8 @@ const ResetPasswordLinkForm = class extends Component {
                         </main>
                     </div>
                 </div>
-            )
+                /*jshint ignore:end */
+            );
         }
     }
 };

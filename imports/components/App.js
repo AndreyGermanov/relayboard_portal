@@ -16,6 +16,7 @@ var App = class extends Component {
         const browserHistory = createBrowserHistory();
         if (Meteor.userId()) {
             return (
+                /*jshint ignore:start */
                 <Provider store={Store.store}>
                     <Router history={browserHistory}>
                         <main>
@@ -46,9 +47,11 @@ var App = class extends Component {
                         </main>
                     </Router>
                 </Provider>
-            )
+                /*jshint ignore:end */
+            );
         } else {
             return (
+                /*jshint ignore:start */
                 <Provider store={Store.store}>
                     <Router history={browserHistory}>
                         <div>
@@ -58,9 +61,10 @@ var App = class extends Component {
                         </div>
                     </Router>
                 </Provider>
-            )
+                /*jshint ignore:end */
+            );
         }
     }
-}
+};
 
 export default App;

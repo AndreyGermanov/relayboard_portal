@@ -4,15 +4,19 @@ import RelayboardContainer from '../containers/RelayboardContainer';
 const Dashboard = class extends Component {
     render() {
         var relayboards =  this.props.relayboards.map(function(relayboard) {
+            /*jshint ignore:start */
             return <RelayboardContainer key={'relayboard_'+relayboard._id} relayboard={relayboard}/>
+            /*jshint ignore:end */
         },this);
         return (
+            /*jshint ignore:start */
             <div>
                 <div className="flexbox">
                     {relayboards}
                 </div>
             </div>
-        )
+            /*jshint ignore:end */
+        );
     }
 };
 

@@ -15,33 +15,34 @@ const ResetPasswordForm = class extends Component {
                 message: ''
             }
         };
-        if (typeof(this.props.errors['password'])!='undefined' && this.props.errors['password']) {
-            fields['password'] = {
+        if (typeof(this.props.errors.password)!='undefined' && this.props.errors.password) {
+            fields.password = {
                 has_error_class: 'has-error',
-                placeholder: this.props.errors['password']
+                placeholder: this.props.errors.password
             };
         }
-        if (typeof(this.props.errors['confirm_password'])!='undefined' && this.props.errors['confirm_password']) {
-            fields['confirm_password'] = {
+        if (typeof(this.props.errors.confirm_password)!='undefined' && this.props.errors.confirm_password) {
+            fields.confirm_password = {
                 has_error_class: 'has-error',
-                placeholder: this.props.errors['confirm_password']
+                placeholder: this.props.errors.confirm_password
             };
         }
-        if (typeof(this.props.errors['general'])!='undefined' && this.props.errors['general']) {
-            fields['general'] = {
-                message: this.props.errors['general']
-            }
+        if (typeof(this.props.errors.general)!='undefined' && this.props.errors.general) {
+            fields.general = {
+                message: this.props.errors.general
+            };
         }
         return (
+            /*jshint ignore:start */
             <div className="outer">
                 <div className="middle">
                     <main className="auth-main inner">
                         <div className="auth-block">
                             <h1>Enter New Password</h1>
                             <div className="alert bg-danger"
-                                 style={{display:(fields['general'].message.length ? '':'none')}}>{fields['general'].message}</div>
+                                 style={{display:(fields.general.message.length ? '':'none')}}>{fields.general.message}</div>
                             <form className="form-horizontal" onSubmit={this.props.onFormSubmit}>
-                                <div className={"form-group "+fields['password'].has_error_class}>
+                                <div className={"form-group "+fields.password.has_error_class}>
                                     <label htmlFor="password" className="col-sm-2 control-label">Password</label>
                                     <div className="col-sm-10">
                                         <div className="input-group">
@@ -50,13 +51,13 @@ const ResetPasswordForm = class extends Component {
                                                 <i className="fa fa-lock"></i>
                                             </span>
                                             <input type="password" id="password" className='form-control'
-                                                   placeholder={fields['password'].placeholder}
+                                                   placeholder={fields.password.placeholder}
                                                    value={this.props.password}
                                                    onChange={this.props.onChangePasswordField}/>
                                         </div>
                                     </div>
                                 </div>
-                                <div className={"form-group "+fields['confirm_password'].has_error_class}>
+                                <div className={"form-group "+fields.confirm_password.has_error_class}>
                                     <label htmlFor="confirm_password" className="col-sm-2 control-label">Confirm</label>
                                     <div className="col-sm-10">
                                         <div className="input-group">
@@ -65,7 +66,7 @@ const ResetPasswordForm = class extends Component {
                                                 <i className="fa fa-lock"></i>
                                             </span>
                                             <input type="password" id="confirm_password" className='form-control'
-                                                   placeholder={fields['confirm_password'].placeholder}
+                                                   placeholder={fields.confirm_password.placeholder}
                                                    value={this.props.confirm_password}
                                                    onChange={this.props.onChangeConfirmPasswordField}/>
                                         </div>
@@ -81,8 +82,8 @@ const ResetPasswordForm = class extends Component {
                     </main>
                 </div>
             </div>
-        )
-
+            /*jshint ignore:end */
+        );
     }
 };
 

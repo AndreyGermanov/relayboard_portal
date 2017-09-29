@@ -8,7 +8,7 @@ var LoginFormReducer = (state,action) => {
             email: '',
             password: '',
             errors: {}
-        }
+        };
     }
     var newState = _.cloneDeep(state);
     switch (action.type) {
@@ -21,12 +21,12 @@ var LoginFormReducer = (state,action) => {
         case actions.types.SET_ERROR_MESSAGES:
             newState.errors = {};
             for (var i in action.errors) {
-                newState.errors[i] = action.errors[i]
+                newState.errors[i] = action.errors[i];
             }
             break;
         default:
     }
     return newState;
-}
+};
 
 export default LoginFormReducer;
