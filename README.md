@@ -1,7 +1,7 @@
 # relayboard_portal
 Portal, used to remotely monitor and control relay board servers.
 
-![Screenshot](https://raw.githubusercontent.com/AndreyGermanov/relayboard_mobile_client/master/assets/img/screenshot.png)
+![Screenshot](https://raw.githubusercontent.com/AndreyGermanov/relayboard_portal/master/public/img/screen.png)
 
 
 Install notes for Debian.
