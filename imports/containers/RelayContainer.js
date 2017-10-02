@@ -28,8 +28,8 @@ const mapDispatchToProps = (dispatch) => {
             Meteor.call('switchRelay',{id:id,number:number,mode:command},function(err,result) {
             });
         },
-        onRelayChartButtonClick: (relayboard_id,index) => {
-            dispatch(dashboardActions.setCurrentRelayboardChart(relayboard_id,index));
+        onRelayChartButtonClick: (relayboard_id,number) => {
+            dispatch(dashboardActions.setCurrentRelayboardChart(relayboard_id,number));
         }
     };
 };

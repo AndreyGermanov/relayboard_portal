@@ -178,6 +178,20 @@ const Application = class extends EventEmitter {
                         }
                     }
                 }
+            },
+            getSensorData: (params) => {
+                if (Meteor.userId()) {
+                    if (params.relayboard_id && params.number && params.series && params.series.length) {
+                        var relayboard = this.relayboards[params.relayboard_id];
+                        var sensor_data = relayboard.getSensorData(params);
+                        try {
+                            sensor_data = JSON.stringify(sensor_data);
+                        } catch (e) {
+                            return e;
+                        }
+                        return sensor_data;
+                    }
+                }
             }
         });
     }

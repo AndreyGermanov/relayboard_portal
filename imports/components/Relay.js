@@ -39,7 +39,7 @@ const Relay = class extends Component {
                         <span className="fa fa-clock-o"/>&nbsp;{this.props.timestamp}
                     </div>
                     <div>
-                        <button type='button' onClick={this.props.onRelayChartButtonClick.bind(this,this.props.relayboard_id,this.props.index)} className="btn btn-default btn-xs">
+                        <button type='button' onClick={this.props.onRelayChartButtonClick.bind(this,this.props.relayboard_id,this.props.config.number)} className="btn btn-default btn-xs">
                             <span className="fa fa-bar-chart"/>
                         </button>
                     </div>
@@ -67,7 +67,7 @@ const Relay = class extends Component {
                         <span className="fa fa-clock-o"/>&nbsp;{this.props.timestamp}
                     </div>
                     <div>
-                        <button type='button' onClick={this.props.onRelayChartButtonClick.bind(this,this.props.relayboard_id,this.props.index)} className="btn btn-default btn-xs">
+                        <button type='button' onClick={this.props.onRelayChartButtonClick.bind(this,this.props.relayboard_id,this.props.config.number)} className="btn btn-default btn-xs">
                             <span className="fa fa-bar-chart"/>
                         </button>
                     </div>

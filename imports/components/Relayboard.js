@@ -22,9 +22,11 @@ const Relayboard = class extends Component {
             });
         }
         var relay_chart = null;
-        if (this.props.current_relay!==null) {
+        if (this.props.current_relay!==null && typeof(this.props.current_relay) != 'undefined') {
             /*jshint ignore:start */
-            relay_chart = <RelayChartContainer relayboard_id={relayboard._id} number={relayboard.config.pins[this.props.current_relay].number} config={relayboard.config.pins[this.props.current_relay]}/>
+            relay_chart = <RelayChartContainer relayboard_id={relayboard._id} number={this.props.current_relay}
+                                               config={_.find(relayboard.config.pins,{number:this.props.current_relay})}
+            settings={relayboard.relayChartSettings[this.props.current_relay]} />
             /*jshint ignore:end */
         }
         return (

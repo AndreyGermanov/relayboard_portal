@@ -8,7 +8,8 @@ import Store from '../store/Store';
 const mapStateToProps = (state,ownProps) => {
     return {
         errors: state.Dashboard.errors,
-        relayboards: ownProps.relayboards
+        relayboards: ownProps.relayboards,
+        relayChartSettings: state.relay
     };
 };
 

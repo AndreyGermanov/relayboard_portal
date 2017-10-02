@@ -118,6 +118,30 @@ var RelayBoard = class extends EventEmitter {
             }
         }
     }
+    
+    getSensorData(params) {
+
+        var fields_to_display = {timestamp:1};
+
+        var conditions_exists = [],
+            condition_exists = {}
+        for (var i in params.series) {
+            if (typeof(fields_to_display[params.series[i]]) == 'undefined') {
+                fields_to_display[params.series[i]] = 1;
+                condition_exists[params.series[i]] = {'$exists':true};
+                conditions_exists.push(condition_exists);
+                condition_exists = {};
+            }
+        }
+        var condition = {relayboard_id:params.relayboard_id,
+            pin:params.number,
+            '$or': conditions_exists,
+            '$and': [ {'timestamp': {'$gte': params.dateStart}},{'timestamp': {'$lte':params.dateEnd}}]};
+
+        console.log(condition);
+
+        return SensorData.find(condition,{fields:fields_to_display,sort:['timestamp','asc']}).fetch();
+    }
 };
 
 export default RelayBoard;

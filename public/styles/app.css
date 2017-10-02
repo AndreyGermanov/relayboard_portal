@@ -76,3 +76,17 @@
 a {
     cursor: pointer;
 }
+
+.panel-relaychart .panel-body {
+    color: black !important;
+    background-color: white;
+}
+
+.panel-relaychart .panel-heading {
+    background-color: darkblue;
+    opacity: 1
+}
+
+.panel-relaychart label {
+    color: black !important;
+}
