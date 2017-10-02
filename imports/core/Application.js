@@ -34,20 +34,17 @@ const Application = class extends EventEmitter {
             }
         });
 
-        Meteor.publish('sensor_data', function() {
+        Meteor.publish('Meteor.users', function() {
             if (Meteor.userId()) {
                 var user = Meteor.users.find({'_id':Meteor.userId()},{relayboards:1}).fetch();
-                user = user.shift();
-                var ids = [];
-                for (var i in user.relayboards) {
-                    ids.push(user.relayboards[i]);
+                if (user.role == 'admin') {
+                    return Meteor.users.find({}, {relayboards: 1});
+                } else {
+                    return Meteor.users.find({'_id':Meteor.userId()},{relayboards:1});
                 }
-                return SensorDataDB.find({relayboard_id:{$in:ids}},{sort:[['timestamp','asc']]});
-            } else {
-                this.ready();
             }
         });
-        
+
         Meteor.methods({
             'registerRelayBoard': (params) => {
                 if (Meteor.userId()) {

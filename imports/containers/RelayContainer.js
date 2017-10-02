@@ -17,11 +17,8 @@ const mapStateToProps = (state,ownProps) => {
 };
 
 const mapTrackerToProps = (state,props) => {
-    Meteor.subscribe('sensor_data');
     return {
-        sensor_data: SensorDataModel.find({relayboard_id:props.relayboard_id,pin:props.pin},
-            {fields:{'_id':1,'status':1,'timestamp':1,'config':1}})
-            .fetch()
+
     };
 };
 

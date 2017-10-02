@@ -5,17 +5,15 @@ import RelayboardModel from '../models/RelayBoard';
 import Dashboard from '../components/Dashboard';
 import Store from '../store/Store';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state,ownProps) => {
     return {
-        errors: state.Dashboard.errors
+        errors: state.Dashboard.errors,
+        relayboards: ownProps.relayboards
     };
 };
 
 const mapTrackerToProps = (state,props) => {
-        Meteor.subscribe('Meteor.users');
-        Meteor.subscribe('relayboards');
         return {
-            relayboards: RelayboardModel.find({},{'_id':1,'status':1,'timestamp':1,'config':1}).fetch()
         };
 };
 

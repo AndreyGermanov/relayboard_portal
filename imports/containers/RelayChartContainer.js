@@ -9,16 +9,13 @@ const mapStateToProps = (state,ownProps) => {
     return {
         relayboard_id: ownProps.relayboard_id,
         config: ownProps.config,
-        number: ownProps.number
+        number: ownProps.number,
+        sensor_data: []
     };
 };
 
 const mapTrackerToProps = (state,ownProps) => {
-
     return {
-        sensor_data: SensorDataModel.find({relayboard_id:ownProps.relayboard_id,pin:parseInt(ownProps.number)},
-            {sort:{'timestamp':1}})
-            .fetch()
     };
 };
 

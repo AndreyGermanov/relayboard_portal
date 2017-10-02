@@ -15,12 +15,13 @@ var App = class extends Component {
     render() {
         const browserHistory = createBrowserHistory();
         if (Meteor.userId()) {
-            return (
-                /*jshint ignore:start */
-                <Provider store={Store.store}>
+            if (this.props.user) {
+                return (
+                    /*jshint ignore:start */
                     <Router history={browserHistory}>
-                        <main>
-                            <aside className="al-sidebar" style={{display:'none'}}>
+                        <main onClick={this.props.onBodyClick.bind(this)}>
+                            <aside className="al-sidebar"
+                                   style={{display: this.props.sideMenuVisible && this.props.user.role == 'admin' ? '' : 'none'}}>
                                 <ul className="al-sidebar-list">
                                     <li className="al-sidebar-list-item">
                                         <Link className="al-sidebar-list-link" to={{pathname:'/'}}>
@@ -34,10 +35,25 @@ var App = class extends Component {
                                     </li>
                                 </ul>
                             </aside>
-                            <div className="al-main">
+                            <div className="page-top clearfix">
+                                <a style={{display:this.props.user.role == 'admin' ? '' : 'none'}} className="collapse-menu-link ion-navicon"
+                                   onClick={this.props.onSideMenuClick.bind(this)}/>
+                                <div className={"pull-right dropdown "+(this.props.userMenuVisible ? 'open' : '')} placeholder=""
+                                     onClick={this.props.onUserMenuClick.bind(this)}>
+                                    <a className="collapse-menu-link fa fa-user  dropdown-toggle" title="Profile"/>
+                                    <ul className="top-dropdown-menu profile-dropdown dropdown-menu">
+                                        <li>
+                                            <a onClick={this.props.onLogoutClick.bind(this)}>
+                                                <i className="fa fa-power-off"></i><span>&nbsp;Logout</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div className={this.props.sideMenuVisible ? 'al-main-with-menu' : 'al-main'}>
                                 <div className="al-content">
                                     <div>
-                                        <Route exact path="/" component={Dashboard}/>
+                                        <Route exact path="/" render={() => { return <Dashboard relayboards={this.props.relayboards}/>}}/>
                                         <Route exact path="/users" component={Users}/>
                                     </div>
                                 </div>
@@ -46,9 +62,13 @@ var App = class extends Component {
                             </footer>
                         </main>
                     </Router>
-                </Provider>
+                    /*jshint ignore:end */
+                );
+            } else {
+                /*jshint ignore:start */
+                return <div>Loading ...</div>;
                 /*jshint ignore:end */
-            );
+            }
         } else {
             return (
                 /*jshint ignore:start */

@@ -7,7 +7,6 @@ const Relayboard = class extends Component {
     render() {
         var relay_columns = null,
             relayboard = this.props.relayboard;
-        console.log(relayboard);
         if (relayboard.status && relayboard.config) {
             relay_columns = relayboard.status.split(',').map(function (status, index) {
                 /*jshint ignore:start */

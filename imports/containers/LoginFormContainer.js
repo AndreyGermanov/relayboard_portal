@@ -39,7 +39,8 @@ const mapDispatchToProps = (dispatch) => {
                         errors.general = err.message;
                         dispatch(actions.setErrorMessages(errors));
                     } else {
-                        location.reload();
+                        dispatch(actions.changeEmailField(''));
+                        dispatch(actions.changePasswordField(''));
                     }
                 });
             }
