@@ -8,7 +8,9 @@ var DashboardActions = class {
             SET_RELAY_CHART_PERIOD: 'SET_RELAY_CHART_PERIOD',
             SET_RELAYBOARDS: 'SET_RELAYBOARDS',
             TOGGLE_RELAYCHART_SERIE: 'TOGGLE_RELAYCHART_SERIE',
-            UPDATE_SENSOR_DATA: 'UPDATE_SENSOR_DATA'
+            UPDATE_SENSOR_DATA: 'UPDATE_SENSOR_DATA',
+            SET_RELAY_CHART_DATE_START: 'SET_RELAY_CHART_DATE_START',
+            SET_RELAY_CHART_DATE_END: 'SET_RELAY_CHART_DATE_END'
         };
     }
 
@@ -24,6 +26,24 @@ var DashboardActions = class {
         return {
             type: this.types.SET_RELAY_CHART_PERIOD,
             period: period,
+            relayboard_id: relayboard_id,
+            number: number
+        };
+    }
+
+    setRelayChartDateStart(relayboard_id,number,dateStart) {
+        return {
+            type: this.types.SET_RELAY_CHART_DATE_START,
+            dateStart: dateStart,
+            relayboard_id: relayboard_id,
+            number: number
+        };
+    }
+
+    setRelayChartDateEnd(relayboard_id,number,dateEnd) {
+        return {
+            type: this.types.SET_RELAY_CHART_DATE_END,
+            dateEnd: dateEnd,
             relayboard_id: relayboard_id,
             number: number
         };

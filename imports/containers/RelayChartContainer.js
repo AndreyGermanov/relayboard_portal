@@ -1,8 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import {connect} from 'react-redux';
-import SensorDataModel from '../models/SensorData';
 import RelayChart from '../components/RelayChart';
 import dashboardActions from '../actions/DashboardActions';
+import moment from 'moment-timezone';
 
 Meteor.subscribe('sensor_data');
 
@@ -30,10 +30,19 @@ const mapDispatchToProps = (dispatch,ownProps) => {
                 dispatch(dashboardActions.setRelayChartPeriod(ownProps.relayboard_id,ownProps.number,e.target.value));
             }
         },
+        onDateStartChange: (value) => {
+            dispatch(dashboardActions.setRelayChartDateStart(ownProps.relayboard_id,ownProps.number,value));
+        },
+        onDateEndChange: (value) => {
+            dispatch(dashboardActions.setRelayChartDateEnd(ownProps.relayboard_id,ownProps.number,value));
+        },
         onCheckSerie: (serie) => {
             dispatch(dashboardActions.toggleRelayChartSerie(ownProps.relayboard_id,ownProps.number,serie));
         },
         onUpdateClick: () => {
+            if (ownProps.period != 'custom') {
+                ownProps.settings.dateEnd = moment();
+            }
             dispatch(dashboardActions.loadRelayChartData(ownProps));
         }
     };

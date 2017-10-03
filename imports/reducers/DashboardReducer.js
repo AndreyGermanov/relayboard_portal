@@ -62,6 +62,12 @@ var DashboardReducer = (state,action) => {
                 default:
             }
             break;
+        case actions.types.SET_RELAY_CHART_DATE_START:
+            newState.relayboards[action.relayboard_id].relayChartSettings[action.number].dateStart = action.dateStart;
+            break;
+        case actions.types.SET_RELAY_CHART_DATE_END:
+            newState.relayboards[action.relayboard_id].relayChartSettings[action.number].dateEnd = action.dateEnd;
+            break;
         case actions.types.SET_RELAYBOARDS:
             for (var i in action.relayboards) {
                 var relayboard = _.cloneDeep(action.relayboards[i]);

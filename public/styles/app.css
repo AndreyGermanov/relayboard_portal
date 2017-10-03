@@ -87,6 +87,6 @@ a {
     opacity: 1
 }
 
-.panel-relaychart label {
+.panel-relaychart label, .panel-relaychart input, .panel-relaychart select {
     color: black !important;
 }
