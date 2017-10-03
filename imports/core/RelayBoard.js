@@ -124,7 +124,7 @@ var RelayBoard = class extends EventEmitter {
         var fields_to_display = {timestamp:1};
 
         var conditions_exists = [],
-            condition_exists = {}
+            condition_exists = {};
         for (var i in params.series) {
             if (typeof(fields_to_display[params.series[i]]) == 'undefined') {
                 fields_to_display[params.series[i]] = 1;

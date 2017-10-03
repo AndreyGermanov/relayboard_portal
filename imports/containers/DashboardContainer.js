@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { Meteor } from 'meteor/meteor';
-import {connect} from 'react-redux-meteor';
+import {connect} from 'react-redux';
 import RelayboardModel from '../models/RelayBoard';
 import Dashboard from '../components/Dashboard';
 import Store from '../store/Store';
@@ -8,14 +8,9 @@ import Store from '../store/Store';
 const mapStateToProps = (state,ownProps) => {
     return {
         errors: state.Dashboard.errors,
-        relayboards: ownProps.relayboards,
+        relayboards: state.Dashboard.relayboards,
         relayChartSettings: state.relay
     };
-};
-
-const mapTrackerToProps = (state,props) => {
-        return {
-        };
 };
 
 const mapDispatchToProps = (dispatch) => {
@@ -23,7 +18,7 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-var DashboardContainer = connect(mapTrackerToProps,mapStateToProps,mapDispatchToProps)(Dashboard);
+var DashboardContainer = connect(mapStateToProps,mapDispatchToProps)(Dashboard);
 
 export default DashboardContainer;
 

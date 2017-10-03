@@ -1,6 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-import {connect} from 'react-redux-meteor';
-import SensorDataModel from '../models/SensorData';
+import {connect} from 'react-redux';
 import Relay from '../components/Relay';
 import moment from 'moment';
 import dashboardActions from '../actions/DashboardActions';
@@ -16,12 +15,6 @@ const mapStateToProps = (state,ownProps) => {
     };
 };
 
-const mapTrackerToProps = (state,props) => {
-    return {
-
-    };
-};
-
 const mapDispatchToProps = (dispatch) => {
     return {
         onRelayClick: (id,command,number) => {
@@ -34,6 +27,6 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-var RelayContainer = connect(mapTrackerToProps,mapStateToProps,mapDispatchToProps)(Relay);
+var RelayContainer = connect(mapStateToProps,mapDispatchToProps)(Relay);
 
 export default RelayContainer;

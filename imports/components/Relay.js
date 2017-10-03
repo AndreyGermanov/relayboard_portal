@@ -1,7 +1,8 @@
 import React,{Component} from 'react';
+import Entity from './Entity';
 import _ from 'lodash';
 
-const Relay = class extends Component {
+const Relay = class extends Entity {
     render() {
         if (this.props.config.type == 'relay') {
             var command = 'ON',

@@ -1,10 +1,11 @@
-import {connect} from 'react-redux-meteor';
+import {connect} from 'react-redux';
 import App from '../components/App';
 import actions from '../actions/AppActions';
 import dashboardActions from '../actions/DashboardActions';
 import RelayboardModel from '../models/RelayBoard';
 import {Meteor} from 'meteor/meteor';
 import Store from '../store/Store';
+import { withTracker } from 'meteor/react-meteor-data';
 
 const mapStateToProps = (state) => {
     return {
@@ -34,7 +35,7 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-const mapTrackerToProps = (state,ownProps) => {
+var AppContainer = withTracker(({id}) => {
     Meteor.subscribe('Meteor.users');
     Meteor.subscribe('relayboards');
     var relayboards = RelayboardModel.find({},{'_id':1,'status':1,'timestamp':1,'config':1}).fetch();
@@ -44,10 +45,6 @@ const mapTrackerToProps = (state,ownProps) => {
         user: Meteor.users.findOne({'_id':Meteor.userId()},{role:1}),
         relayboards: relayboards
     };
-};
-
-var AppContainer = connect(mapTrackerToProps,mapStateToProps,mapDispatchToProps)(App);
+})(connect(mapStateToProps,mapDispatchToProps)(App));
 
 export default AppContainer;
-
-

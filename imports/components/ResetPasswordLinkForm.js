@@ -1,6 +1,7 @@
 import React,{Component} from 'react';
+import Entity from './Entity';
 
-const ResetPasswordLinkForm = class extends Component {
+const ResetPasswordLinkForm = class extends Entity {
     render() {
         var fields = {
             email: {

@@ -6,7 +6,7 @@ import { Accounts } from 'meteor/accounts-base';
 import App from '../imports/containers/AppContainer';
 import React from 'react';
 import { render } from 'react-dom';
-import {Provider} from 'react-redux-meteor';
+import {Provider} from 'react-redux';
 import Store from '../imports/store/Store';
 import './main.html';
 Meteor.startup(() => {

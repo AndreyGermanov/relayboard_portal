@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import {connect} from 'react-redux-meteor';
+import {connect} from 'react-redux';
 import {Accounts} from 'meteor/accounts-base';
 import actions from '../actions/ResetPasswordFormActions';
 import ResetPasswordForm from '../components/ResetPasswordForm';
@@ -51,6 +51,6 @@ const mapDispatchToProps = (dispatch,ownProps) => {
     };
 };
 
-var ResetPasswordFormContainer = connect(null,mapStateToProps,mapDispatchToProps)(ResetPasswordForm);
+var ResetPasswordFormContainer = connect(mapStateToProps,mapDispatchToProps)(ResetPasswordForm);
 
 export default ResetPasswordFormContainer;

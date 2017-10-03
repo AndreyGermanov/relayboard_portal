@@ -1,6 +1,7 @@
 import React,{Component} from 'react';
+import Entity from './Entity';
 
-const LoginForm = class extends Component {
+const LoginForm = class extends Entity {
     render() {
         var fields = {
             email: {

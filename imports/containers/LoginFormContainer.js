@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { Meteor } from 'meteor/meteor';
-import {connect} from 'react-redux-meteor';
+import {connect} from 'react-redux';
 import actions from '../actions/LoginFormActions';
 import LoginForm from '../components/LoginForm';
 import Store from '../store/Store';
@@ -48,6 +48,6 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-var LoginFormContainer = connect(null,mapStateToProps,mapDispatchToProps)(LoginForm);
+var LoginFormContainer = connect(mapStateToProps,mapDispatchToProps)(LoginForm);
 
 export default LoginFormContainer;

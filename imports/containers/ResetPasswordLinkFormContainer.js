@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { Meteor } from 'meteor/meteor';
-import {connect} from 'react-redux-meteor';
+import {connect} from 'react-redux';
 import {Accounts} from 'meteor/accounts-base';
 import actions from '../actions/ResetPasswordLinkFormActions';
 import ResetPasswordLinkForm from '../components/ResetPasswordLinkForm';
@@ -42,6 +42,6 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-var ResetPasswordLinkFormContainer = connect(null,mapStateToProps,mapDispatchToProps)(ResetPasswordLinkForm);
+var ResetPasswordLinkFormContainer = connect(mapStateToProps,mapDispatchToProps)(ResetPasswordLinkForm);
 
 export default ResetPasswordLinkFormContainer;

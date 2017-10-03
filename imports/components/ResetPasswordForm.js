@@ -1,6 +1,7 @@
 import React,{Component} from 'react';
+import Entity from './Entity';
 
-const ResetPasswordForm = class extends Component {
+const ResetPasswordForm = class extends Entity {
     render() {
         var fields = {
             password: {

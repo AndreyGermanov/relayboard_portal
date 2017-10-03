@@ -1,5 +1,6 @@
 import {Meteor} from 'meteor/meteor';
 import React,{Component} from 'react';
+import Entity from './Entity';
 import { Router, Route } from 'react-router';
 import { Link } from 'react-router-dom';
 import createBrowserHistory from 'history/createBrowserHistory';
@@ -8,12 +9,14 @@ import Users from './Users';
 import LoginForm from '../containers/LoginFormContainer';
 import ResetPasswordLinkForm from '../containers/ResetPasswordLinkFormContainer';
 import ResetPasswordForm from '../containers/ResetPasswordFormContainer';
-import {Provider} from 'react-redux-meteor';
+import {Provider} from 'react-redux';
 import Store from '../store/Store';
+import _ from 'lodash';
+const browserHistory = createBrowserHistory();
 
-var App = class extends Component {
+var App = class extends Entity {
+
     render() {
-        const browserHistory = createBrowserHistory();
         if (Meteor.userId()) {
             if (this.props.user) {
                 return (
@@ -53,7 +56,7 @@ var App = class extends Component {
                             <div className={this.props.sideMenuVisible ? 'al-main-with-menu' : 'al-main'}>
                                 <div className="al-content">
                                     <div>
-                                        <Route exact path="/" render={() => { return <Dashboard relayboards={this.props.relayboards}/>}}/>
+                                        <Route exact path="/" render={() => { return <Dashboard/>}}/>
                                         <Route exact path="/users" component={Users}/>
                                     </div>
                                 </div>

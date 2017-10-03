@@ -25,17 +25,17 @@ var DashboardReducer = (state,action) => {
                     dateStart: moment().startOf('day'),
                     dateEnd: moment(),
                     series: []
-                }
+                };
                 var config = _.find(newState.relayboards[action.relayboard_id].config.pins,{number:action.number});
                 if (config && typeof(config) != 'undefined') {
                     if (config.type == 'temperature') {
                         newState.relayboards[action.relayboard_id].relayChartSettings[action.number].series = [
                             'temperature'
-                        ]
+                        ];
                     } else if (config.type == 'relay') {
                         newState.relayboards[action.relayboard_id].relayChartSettings[action.number].series = [
                             'status'
-                        ]
+                        ];
                     }
                 }
             }

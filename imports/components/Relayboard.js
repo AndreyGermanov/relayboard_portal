@@ -1,9 +1,11 @@
 import React,{Component} from 'react';
+import Entity from './Entity';
 import _ from 'lodash';
 import RelayContainer from '../containers/RelayContainer';
 import RelayChartContainer from '../containers/RelayChartContainer';
 
-const Relayboard = class extends Component {
+const Relayboard = class extends Entity {
+    
     render() {
         var relay_columns = null,
             relayboard = this.props.relayboard;

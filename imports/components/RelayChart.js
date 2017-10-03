@@ -1,16 +1,12 @@
 import React,{Component} from 'react';
+import Entity from './Entity';
 import moment from 'moment';
 import _ from 'lodash';
-import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer} from 'recharts';
+import RelayChartWrapper from './RelayChartWrapper';
 
-const RelayChart = class extends Component {
-    shouldComponentUpdate(nextProps,nextState) {
-        for (var i in this.props) {
-            if (!_.isEqual(this.props[i],nextProps[i]) && typeof(this.props[i])!='function') {
-                return true;
-            }
-        }
-        return false;
+const RelayChart = class extends Entity {
+
+    componentDidUpdate() {
     }
 
     renderTemperatureChart() {
@@ -76,17 +72,21 @@ const RelayChart = class extends Component {
             }
         }
 
-        var chart = <ResponsiveContainer width="95%" height={300}>
-            <LineChart width={730} height={250} data={data}
-                       margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                <XAxis dataKey="time" stroke="black"/>
-                <YAxis stroke="black"/>
-                <CartesianGrid strokeDasharray="3 3"/>
-                <Tooltip />
-                <Line type="monotone" dataKey="temperature" stroke="#aaaa00" dot={false} strokeWidth={2}/>
-                <Line type="monotone" dataKey="humidity" stroke="#00aaaa" dot={false} strokeWidth={2}/>
-            </LineChart>
-        </ResponsiveContainer>;
+        var series = this.props.series.map((serie) => {
+            var result = {
+                name: serie
+            };
+            if (serie == 'temperature') {
+                result.color = '#aaaa00';
+            } else if (serie == 'humidity') {
+                result.color = '#00aaaa';
+            }
+            return result;
+        });
+
+        /*jshint ignore:start */
+        var chart = <RelayChartWrapper data={data} series={series}/>;
+        /*jshint ignore:end */
 
         return (
             /*jshint ignore:start */
@@ -109,7 +109,8 @@ const RelayChart = class extends Component {
                             <div className="form-group">
                                 <label htmlFor="periodInput" className="col-sm-1">Period</label>
                                 <div className="col-sm-3">
-                                    <select className="form-control" style={{color:'black'}} value={this.props.period} onChange={this.props.onPeriodChange.bind(this)}>
+                                    <select className="form-control" style={{color:'black'}} value={this.props.period}
+                                            onChange={this.props.onPeriodChange.bind(this)}>
                                         <option value="day">Day</option>
                                         <option value="week">Week</option>
                                         <option value="month">Month</option>
@@ -141,7 +142,9 @@ const RelayChart = class extends Component {
         if (this.props.config.type == 'temperature') {
             return this.renderTemperatureChart();
         } else {
+            /*jshint ignore:start */
             return <div>{this.props.config.type}</div>
+            /*jshint ignore:end */
         }
     }
 };

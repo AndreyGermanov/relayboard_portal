@@ -38,7 +38,6 @@ var RootReducer = (state,action) => {
             }
             break;
     }
-
     return newState;
 };
 

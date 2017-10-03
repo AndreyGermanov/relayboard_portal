@@ -26,14 +26,14 @@ var DashboardActions = class {
             period: period,
             relayboard_id: relayboard_id,
             number: number
-        }
+        };
     }
 
     setRelayBoards(relayboards) {
         return {
             type: this.types.SET_RELAYBOARDS,
             relayboards: relayboards
-        }
+        };
     }
 
     toggleRelayChartSerie(relayboard_id,number,serie) {
@@ -42,7 +42,7 @@ var DashboardActions = class {
             relayboard_id: relayboard_id,
             number: number,
             serie: serie
-        }
+        };
     }
 
     loadRelayChartData(props) {
@@ -61,8 +61,8 @@ var DashboardActions = class {
                 } else {
                     console.log(err);
                 }
-            })
-        }
+            });
+        };
     }
 
     updateSensorData(relayboard_id,number,sensor_data) {
@@ -71,7 +71,7 @@ var DashboardActions = class {
             number: number,
             relayboard_id: relayboard_id,
             sensor_data: sensor_data
-        }
+        };
     }
 };
 

@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-import {connect} from 'react-redux-meteor';
+import {connect} from 'react-redux';
 import Relayboard from '../components/Relayboard';
 
 const mapStateToProps = (state,ownProps) => {
@@ -24,6 +24,6 @@ const mapDispatchToProps = () => {
     };
 };
 
-var RelayboardContainer = connect(null,mapStateToProps,mapDispatchToProps)(Relayboard);
+var RelayboardContainer = connect(mapStateToProps,mapDispatchToProps)(Relayboard);
 
 export default RelayboardContainer;

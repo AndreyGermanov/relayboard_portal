@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-import {connect} from 'react-redux-meteor';
+import {connect} from 'react-redux';
 import SensorDataModel from '../models/SensorData';
 import RelayChart from '../components/RelayChart';
 import dashboardActions from '../actions/DashboardActions';
@@ -27,7 +27,7 @@ const mapDispatchToProps = (dispatch,ownProps) => {
         },
         onPeriodChange: (e) => {
             if (e && e.target) {
-                dispatch(dashboardActions.setRelayChartPeriod(ownProps.relayboard_id,ownProps.number,e.target.value))
+                dispatch(dashboardActions.setRelayChartPeriod(ownProps.relayboard_id,ownProps.number,e.target.value));
             }
         },
         onCheckSerie: (serie) => {
@@ -39,6 +39,6 @@ const mapDispatchToProps = (dispatch,ownProps) => {
     };
 };
 
-var RelayChartContainer = connect(null,mapStateToProps,mapDispatchToProps)(RelayChart);
+var RelayChartContainer = connect(mapStateToProps,mapDispatchToProps)(RelayChart);
 
 export default RelayChartContainer;

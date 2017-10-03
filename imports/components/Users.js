@@ -1,6 +1,7 @@
 import React,{Component} from 'react';
+import Entity from './Entity';
 
-const Users = class extends Component {
+const Users = class extends Entity {
     render() {
         return (
             /*jshint ignore:start */
