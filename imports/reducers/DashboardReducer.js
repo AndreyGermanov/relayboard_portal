@@ -21,21 +21,25 @@ var DashboardReducer = (state,action) => {
                 if (!newState.relayboards[action.relayboard_id].relayChartSettings) {
                     newState.relayboards[action.relayboard_id].relayChartSettings = {};
                 }
-                newState.relayboards[action.relayboard_id].relayChartSettings[action.number] = {
-                    dateStart: moment().startOf('day'),
-                    dateEnd: moment(),
-                    series: []
-                };
-                var config = _.find(newState.relayboards[action.relayboard_id].config.pins,{number:action.number});
-                if (config && typeof(config) != 'undefined') {
-                    if (config.type == 'temperature') {
-                        newState.relayboards[action.relayboard_id].relayChartSettings[action.number].series = [
-                            'temperature'
-                        ];
-                    } else if (config.type == 'relay') {
-                        newState.relayboards[action.relayboard_id].relayChartSettings[action.number].series = [
-                            'status'
-                        ];
+                if (!newState.relayboards[action.relayboard_id].relayChartSettings[action.number]) {
+                    newState.relayboards[action.relayboard_id].relayChartSettings[action.number] = {
+                        dateStart: moment().startOf('day'),
+                        dateEnd: moment(),
+                        series: []
+                    };
+                    var config = _.find(newState.relayboards[action.relayboard_id].config.pins, {number: action.number});
+                    if (config && typeof(config) != 'undefined') {
+                        if (!newState.relayboards[action.relayboard_id].relayChartSettings[action.number].series.length) {
+                            if (config.type == 'temperature') {
+                                newState.relayboards[action.relayboard_id].relayChartSettings[action.number].series = [
+                                    'temperature'
+                                ];
+                            } else if (config.type == 'relay') {
+                                newState.relayboards[action.relayboard_id].relayChartSettings[action.number].series = [
+                                    'status'
+                                ];
+                            }
+                        }
                     }
                 }
             }
