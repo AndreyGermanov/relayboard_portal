@@ -25,6 +25,7 @@ var DashboardReducer = (state,action) => {
                     newState.relayboards[action.relayboard_id].relayChartSettings[action.number] = {
                         dateStart: moment().startOf('day'),
                         dateEnd: moment(),
+                        period: 'live',
                         series: []
                     };
                     var config = _.find(newState.relayboards[action.relayboard_id].config.pins, {number: action.number});
@@ -76,11 +77,36 @@ var DashboardReducer = (state,action) => {
             for (var i in action.relayboards) {
                 var relayboard = _.cloneDeep(action.relayboards[i]);
                 if (newState.relayboards[relayboard._id]) {
+                    if (!newState.relayboards[relayboard._id].live_sensor_data) {
+                        newState.relayboards[relayboard._id].live_sensor_data = {};
+                    }
+                    relayboard.live_sensor_data = _.cloneDeep(newState.relayboards[relayboard._id].live_sensor_data);
                     relayboard.relayChartSettings = _.cloneDeep(newState.relayboards[relayboard._id].relayChartSettings);
                     relayboard.current_relay = newState.relayboards[relayboard._id].current_relay;
                     relayboard.sensor_data = newState.relayboards[relayboard._id].sensor_data;
+                    var status = relayboard.status.split(',');
+                    for (var i1 in relayboard.config.pins) {
+                        if (!relayboard.live_sensor_data[relayboard.config.pins[i1].number]) {
+                            relayboard.live_sensor_data[relayboard.config.pins[i1].number] = [];
+                        }
+                        var current_status = {
+                            time: moment(relayboard.timestamp).format('DD-MM-YYYY HH:mm:ss')
+                        };
+                        if (relayboard.config.pins[i1].type == 'relay') {
+                            current_status.status = parseInt(status[i1]);
+                        } else if (relayboard.config.pins[i1].type == 'temperature') {
+                            var status_parts = status[i1].toString().split('|');
+                            current_status.temperature = parseFloat(status_parts.shift());
+                            current_status.humidity = parseFloat(status_parts.pop());
+                        }
+                        if (relayboard.live_sensor_data[relayboard.config.pins[i1].number]>1800) {
+                            relayboard.live_sensor_data[relayboard.config.pins[i1].number].shift();
+                        }
+                        relayboard.live_sensor_data[relayboard.config.pins[i1].number].push(current_status);
+                    }
                 } else {
                     relayboard.relayChartSettings = {};
+                    relayboard.live_sensor_data = [];
                     relayboard.sensor_data = {};
                     relayboard.current_relay = null;
                 }

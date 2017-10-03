@@ -15,7 +15,7 @@ const mapStateToProps = (state,ownProps) => {
         dateStart: ownProps.settings.dateStart,
         dateEnd: ownProps.settings.dateEnd,
         series: ownProps.settings.series,
-        sensor_data: state.Dashboard.relayboards[ownProps.relayboard_id].sensor_data[ownProps.number]
+        sensor_data: ownProps.settings.period != 'live' ? state.Dashboard.relayboards[ownProps.relayboard_id].sensor_data[ownProps.number] : state.Dashboard.relayboards[ownProps.relayboard_id].live_sensor_data[ownProps.number]
     };
 };
 

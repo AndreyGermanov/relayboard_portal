@@ -2,7 +2,6 @@ import {EventEmitter} from 'events';
 import RelayBoardsDB  from '../models/RelayBoard';
 import SensorData from '../models/SensorData';
 import {Meteor} from 'meteor/meteor';
-import moment from 'moment';
 import _ from 'lodash';
 
 var RelayBoard = class extends EventEmitter {
@@ -125,6 +124,7 @@ var RelayBoard = class extends EventEmitter {
 
         var conditions_exists = [],
             condition_exists = {};
+
         for (var i in params.series) {
             if (typeof(fields_to_display[params.series[i]]) == 'undefined') {
                 fields_to_display[params.series[i]] = 1;
@@ -133,12 +133,11 @@ var RelayBoard = class extends EventEmitter {
                 condition_exists = {};
             }
         }
+
         var condition = {relayboard_id:params.relayboard_id,
             pin:params.number,
             '$or': conditions_exists,
             '$and': [ {'timestamp': {'$gte': params.dateStart}},{'timestamp': {'$lte':params.dateEnd}}]};
-
-        console.log(condition);
 
         return SensorData.find(condition,{fields:fields_to_display,sort:['timestamp','asc']}).fetch();
     }

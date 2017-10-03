@@ -29,13 +29,13 @@ const mapDispatchToProps = (dispatch) => {
             e.preventDefault();
             Meteor.logout();
         },
-        onBodyClick: (e) => {
+        onBodyClick: () => {
             dispatch(actions.toggleUserMenu(false));
         }
     };
 };
 
-var AppContainer = withTracker(({id}) => {
+var AppContainer = withTracker(() => {
     Meteor.subscribe('Meteor.users');
     Meteor.subscribe('relayboards');
     var relayboards = RelayboardModel.find({},{'_id':1,'status':1,'timestamp':1,'config':1}).fetch();
