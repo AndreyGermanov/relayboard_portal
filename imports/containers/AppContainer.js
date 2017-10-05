@@ -41,8 +41,8 @@ var AppContainer = withTracker(() => {
     var relayboards = RelayboardModel.find({},{'_id':1,'status':1,'timestamp':1,'config':1}).fetch();
     Store.store.dispatch(dashboardActions.setRelayBoards(relayboards));
     return {
-        users: Meteor.users.find({},{relayboards:1}).fetch(),
-        user: Meteor.users.findOne({'_id':Meteor.userId()},{role:1}),
+        users: Meteor.users.find({},{relayboards:1,role:1}).fetch(),
+        user: Meteor.users.findOne({'_id':Meteor.userId()},{role:1,relayboards:1}),
         relayboards: relayboards
     };
 })(connect(mapStateToProps,mapDispatchToProps)(App));

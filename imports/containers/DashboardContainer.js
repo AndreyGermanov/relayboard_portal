@@ -9,7 +9,7 @@ const mapStateToProps = (state,ownProps) => {
     return {
         errors: state.Dashboard.errors,
         relayboards: state.Dashboard.relayboards,
-        relayChartSettings: state.relay
+        user: ownProps.user
     };
 };
 

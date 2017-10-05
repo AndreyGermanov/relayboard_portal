@@ -71,7 +71,8 @@ const RelayChart = class extends Entity {
                     <div className="panel-heading">
                         <h3 className="panel-title">{this.props.config.title} ({moment(this.props.dateStart).format('YYYY-MM-DD HH:mm:ss')}-{moment(this.props.dateEnd).format('YYYY-MM-DD HH:mm:ss')})
                             <span className="pull-right">
-                                <button onClick={this.props.onUpdateClick.bind(this)} className="btn btn-default btn-xs">
+                                <button style={{display: this.props.period == 'live' ? 'none' : ''}}
+                                        onClick={this.props.onUpdateClick.bind(this)} className="btn btn-default btn-xs">
                                     <span className="fa fa-refresh"/>&nbsp;Update
                                 </button>&nbsp;&nbsp;&nbsp;
                                 <button onClick={this.props.onCloseClick.bind(this)} className="btn btn-danger btn-xs">
@@ -209,9 +210,12 @@ const RelayChart = class extends Entity {
             <div style={{padding:"20px"}}>
                 <div className="panel panel-blur panel-relaychart">
                     <div className="panel-heading">
-                        <h3 className="panel-title">{this.props.config.title} ({moment(this.props.dateStart).format('YYYY-MM-DD HH:mm:ss')}-{moment(this.props.dateEnd).format('YYYY-MM-DD HH:mm:ss')})
+                        <h3 className="panel-title">{this.props.config.title}
+                            ({moment(this.props.dateStart).format('YYYY-MM-DD HH:mm:ss')}-
+                            {moment(this.props.dateEnd).format('YYYY-MM-DD HH:mm:ss')})
                             <span className="pull-right">
-                                <button style={{display: this.props.period == 'live' ? 'none' : ''}} onClick={this.props.onUpdateClick.bind(this)} className="btn btn-default btn-xs">
+                                <button style={{display: this.props.period == 'live' ? 'none' : ''}}
+                                        onClick={this.props.onUpdateClick.bind(this)} className="btn btn-default btn-xs">
                                     <span className="fa fa-refresh"/>&nbsp;Update
                                 </button>&nbsp;&nbsp;&nbsp;
                                 <button onClick={this.props.onCloseClick.bind(this)} className="btn btn-danger btn-xs">

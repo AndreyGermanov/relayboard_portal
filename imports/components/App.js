@@ -1,18 +1,18 @@
 import {Meteor} from 'meteor/meteor';
 import React,{Component} from 'react';
 import Entity from './Entity';
-import { Router, Route } from 'react-router';
+import { Router, Route, Switch } from 'react-router';
 import { Link } from 'react-router-dom';
-import createBrowserHistory from 'history/createBrowserHistory';
 import Dashboard from '../containers/DashboardContainer';
-import Users from './Users';
+import Users from '../containers/UsersContainer';
+import User from '../containers/UserContainer';
 import LoginForm from '../containers/LoginFormContainer';
 import ResetPasswordLinkForm from '../containers/ResetPasswordLinkFormContainer';
 import ResetPasswordForm from '../containers/ResetPasswordFormContainer';
 import {Provider} from 'react-redux';
 import Store from '../store/Store';
-import _ from 'lodash';
-const browserHistory = createBrowserHistory();
+
+const browserHistory = Store.browserHistory;
 
 var App = class extends Entity {
 
@@ -56,8 +56,18 @@ var App = class extends Entity {
                             <div className={this.props.sideMenuVisible ? 'al-main-with-menu' : 'al-main'}>
                                 <div className="al-content">
                                     <div>
-                                        <Route exact path="/" render={() => { return <Dashboard/>}}/>
-                                        <Route exact path="/users" component={Users}/>
+                                        <Switch>
+                                            <Route exact path="/" render={() => { return <Dashboard user={this.props.user}/>}}/>
+                                            <Route exact path="/users" render={() => {
+                                                return <Users user={this.props.user} users={this.props.users} relayboards={this.props.relayboards}/>
+                                                }
+                                             }/>
+                                            <Route path="/user/:id?"
+                                                   render={(state) => {
+                                                   return <User user_id={state.match.params.id} users={this.props.users} relayboards={this.props.relayboards}/>}}
+                                            />
+                                            <Route render={() => { return <Dashboard user={this.props.user}/>}}/>
+                                        </Switch>
                                     </div>
                                 </div>
                             </div>
@@ -78,9 +88,12 @@ var App = class extends Entity {
                 <Provider store={Store.store}>
                     <Router history={browserHistory}>
                         <div>
-                            <Route exact path="/" component={LoginForm}/>
-                            <Route exact path="/link" component={ResetPasswordLinkForm}/>
-                            <Route exact path="/reset-password/:token" component={ResetPasswordForm}/>
+                            <Switch>
+                                <Route exact path="/" component={LoginForm}/>
+                                <Route exact path="/link" component={ResetPasswordLinkForm}/>
+                                <Route exact path="/reset-password/:token" component={ResetPasswordForm}/>
+                                <Route component={LoginForm}/>
+                            </Switch>
                         </div>
                     </Router>
                 </Provider>

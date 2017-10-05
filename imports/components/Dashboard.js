@@ -6,7 +6,9 @@ import Store from '../store/Store';
 const Dashboard = class extends Entity {
     render() {
         if (this.props.relayboards) {
-            var state_relayboards = _.toArray(this.props.relayboards);
+            var state_relayboards = _.toArray(this.props.relayboards).filter(function(relayboard,index) {
+                return this.props.user.relayboards.indexOf(relayboard._id) != -1;
+            },this);
             var relayboards = state_relayboards.map(function (relayboard) {
                 if (Store.store.getState().Dashboard.relayboards[relayboard._id]) {
                     relayboard.relayChartSettings = Store.store.getState().Dashboard.relayboards[relayboard._id].relayChartSettings;
@@ -15,6 +17,7 @@ const Dashboard = class extends Entity {
                 return <RelayboardContainer key={'relayboard_'+relayboard._id} relayboard={relayboard}/>;
                 /*jshint ignore:end */
             }, this);
+
             return (
                 /*jshint ignore:start */
                 <div>

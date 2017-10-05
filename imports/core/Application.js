@@ -3,7 +3,7 @@ import {Accounts} from 'meteor/accounts-base';
 import {Meteor} from 'meteor/meteor';
 import RelayBoard from './RelayBoard';
 import RelayBoardsDB  from '../models/RelayBoard';
-import SensorDataDB from '../models/SensorData';
+import Users from './Users';
 import _ from 'lodash';
 
 const Application = class extends EventEmitter {
@@ -12,6 +12,9 @@ const Application = class extends EventEmitter {
         this.relayboards = {};
         var self = this;
         process.env.MAIL_URL="";
+
+        this.users = new Users();
+
 
         Accounts.emailTemplates.resetPassword.text =(user,url) => {
             url = url.replace(/\#/g,'').replace(/\/\//g,'/');
@@ -24,11 +27,15 @@ const Application = class extends EventEmitter {
             if (Meteor.userId()) {
                 var user = Meteor.users.find({'_id':Meteor.userId()},{relayboards:1}).fetch();
                 user = user.shift();
-                var ids = [];
-                for (var i in user.relayboards) {
-                    ids.push(user.relayboards[i]);
+                var condition = {};
+                if (user.role != 'admin') {
+                    var ids = [];
+                    for (var i in user.relayboards) {
+                        ids.push(user.relayboards[i]);
+                    }
+                    condition = {'_id': {$in: ids}};
                 }
-                return RelayBoardsDB.find({'_id':{$in:ids}});
+                return RelayBoardsDB.find(condition);
             } else {
                 this.ready();
             }
@@ -36,7 +43,7 @@ const Application = class extends EventEmitter {
 
         Meteor.publish('Meteor.users', function() {
             if (Meteor.userId()) {
-                var user = Meteor.users.find({'_id':Meteor.userId()},{relayboards:1}).fetch();
+                var user = Meteor.users.findOne({'_id':Meteor.userId()},{relayboards:1});
                 if (user.role == 'admin') {
                     return Meteor.users.find({}, {relayboards: 1});
                 } else {
@@ -44,8 +51,7 @@ const Application = class extends EventEmitter {
                 }
             }
         });
-
-        Meteor.methods({
+        var methods = {
             'registerRelayBoard': (params) => {
                 if (Meteor.userId()) {
                     var id = params.id;
@@ -193,7 +199,15 @@ const Application = class extends EventEmitter {
                     }
                 }
             }
-        });
+        };
+
+        var users_methods = this.users.getDDPMethods();
+
+        for (var i in users_methods) {
+            methods[i] = users_methods[i];
+        }
+
+        Meteor.methods(methods);
     }
 
     run() {

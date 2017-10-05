@@ -90,3 +90,7 @@ a {
 .panel-relaychart label, .panel-relaychart input, .panel-relaychart select {
     color: black !important;
 }
+
+.error {
+    color: #ffcccc;
+}
