@@ -1,7 +1,9 @@
 import React,{Component} from 'react';
+import {Page,Tab,Tabs} from 'react-blur-admin';
 import Entity from './Entity';
 import _ from 'lodash';
 import RelayContainer from '../containers/RelayContainer';
+import TerminalSessionContainer from '../containers/TerminalSessionContainer';
 import RelayChartContainer from '../containers/RelayChartContainer';
 
 const Relayboard = class extends Entity {
@@ -44,15 +46,22 @@ const Relayboard = class extends Entity {
                     </h3>
                 </div>
                 <div className="panel-body">
-                    <table>
-                        <tbody>
-                        <tr>
-                            {relay_columns}
-                        </tr>
-                        </tbody>
-                    </table>
+                    <Tabs align="top" startTab={1} size="auto">
+                        <Tab title="Status">
+                            <table>
+                                <tbody>
+                                <tr>
+                                    {relay_columns}
+                                </tr>
+                                </tbody>
+                            </table>
+                            {relay_chart}
+                        </Tab>
+                        <Tab title="Manage">
+                            <TerminalSessionContainer relayboard={relayboard}/>
+                        </Tab>
+                    </Tabs>
                 </div>
-                {relay_chart}
             </div>
             /*jshint ignore:end */
         );

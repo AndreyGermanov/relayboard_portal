@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import {connect} from 'react-redux';
 import Relayboard from '../components/Relayboard';
+import actions from '../actions/DashboardActions';
 
 const mapStateToProps = (state,ownProps) => {
     var current_relay = null;
@@ -13,7 +14,7 @@ const mapStateToProps = (state,ownProps) => {
     };
 };
 
-const mapDispatchToProps = () => {
+const mapDispatchToProps = (dispatch,ownProps) => {
     return {
         onRemoveRelayboardClick: (id) => {
             if (confirm('Are you sure?')) {

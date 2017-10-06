@@ -1,4 +1,5 @@
 import {Meteor} from 'meteor/meteor';
+import Store from '../store/Store';
 
 var DashboardActions = class {
 
@@ -10,7 +11,10 @@ var DashboardActions = class {
             TOGGLE_RELAYCHART_SERIE: 'TOGGLE_RELAYCHART_SERIE',
             UPDATE_SENSOR_DATA: 'UPDATE_SENSOR_DATA',
             SET_RELAY_CHART_DATE_START: 'SET_RELAY_CHART_DATE_START',
-            SET_RELAY_CHART_DATE_END: 'SET_RELAY_CHART_DATE_END'
+            SET_RELAY_CHART_DATE_END: 'SET_RELAY_CHART_DATE_END',
+            SET_TERMINAL_COMMAND: 'SET_TERMINAL_COMMAND',
+            ADD_LINES_TO_TERMINAL_BUFFER: 'ADD_LINES_TO_TERMINAL_BUFFER',
+            CLEAR_TERMINAL_BUFFER: 'CLEAR_TERMINAL_BUFFER'
         };
     }
 
@@ -92,6 +96,40 @@ var DashboardActions = class {
             relayboard_id: relayboard_id,
             sensor_data: sensor_data
         };
+    }
+
+    setTerminalCommand(relayboard_id,command) {
+        return {
+            type: this.types.SET_TERMINAL_COMMAND,
+            relayboard_id: relayboard_id,
+            command: command
+        }
+    }
+
+    addLinesToTerminalBuffer(relayboard_id,lines) {
+        return {
+            type: this.types.ADD_LINES_TO_TERMINAL_BUFFER,
+            relayboard_id: relayboard_id,
+            lines: lines
+        }
+    }
+
+    clearTerminalBuffer(relayboard_id) {
+        return {
+            type: this.types.CLEAR_TERMINAL_BUFFER,
+            relayboard_id: relayboard_id
+        }
+    }
+
+    sendTerminalCommand(relayboard_id) {
+        var self = this;
+        return (dispatch) => {
+            var state = Store.store.getState().Dashboard.relayboards[relayboard_id];
+            dispatch(self.addLinesToTerminalBuffer(relayboard_id,['$ '+state.terminal_command]));
+            Meteor.call('execCommand', {id:relayboard_id,command:state.terminal_command}, function(err,result) {
+                dispatch(self.setTerminalCommand(relayboard_id,''));
+            });
+        }
     }
 };
 

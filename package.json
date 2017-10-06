@@ -12,6 +12,7 @@
     "meteor-node-stubs": "~0.2.4",
     "moment": "^2.18.1",
     "moment-timezone": "^0.5.13",
+    "prop-types": "^15.6.0",
     "react": "^16.0.0",
     "react-addons-pure-render-mixin": "^15.6.2",
     "react-blur-admin": "^0.11.1",

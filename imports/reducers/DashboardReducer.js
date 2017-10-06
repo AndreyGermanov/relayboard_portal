@@ -11,10 +11,16 @@ var DashboardReducer = (state,action) => {
         };
     }
     var newState = _.cloneDeep(state);
+
+    if (typeof actions.types == 'undefined') {
+        return newState;
+    }
+
     switch (action.type) {
         case  actions.types.SET_CURRENT_RELAYBOARD_CHART:
             if (!newState.relayboards[action.relayboard_id] || typeof newState.relayboards[action.relayboard_id] == 'undefined') {
-                newState.relayboards[action.relayboard_id] = {};
+                newState.relayboards[action.relayboard_id] = {
+                };
             }
             if (newState.relayboards[action.relayboard_id].current_relay != action.number) {
                 newState.relayboards[action.relayboard_id].current_relay = action.number;
@@ -84,6 +90,14 @@ var DashboardReducer = (state,action) => {
                     relayboard.relayChartSettings = _.cloneDeep(newState.relayboards[relayboard._id].relayChartSettings);
                     relayboard.current_relay = newState.relayboards[relayboard._id].current_relay;
                     relayboard.sensor_data = newState.relayboards[relayboard._id].sensor_data;
+                    if (relayboard.buffer && relayboard.buffer.length) {
+                        relayboard.buffer = relayboard.buffer.shift();
+                        for (var index in relayboard.buffer) {
+                            newState.relayboards[relayboard._id].terminal_buffer.push(relayboard.buffer[index]);
+                        }
+                    }
+                    relayboard.terminal_buffer = newState.relayboards[relayboard._id].terminal_buffer;
+                    relayboard.terminal_command = newState.relayboards[relayboard._id].terminal_command;
                     var status = relayboard.status.split(',');
                     for (var i1 in relayboard.config.pins) {
                         if (!relayboard.live_sensor_data[relayboard.config.pins[i1].number]) {
@@ -107,6 +121,7 @@ var DashboardReducer = (state,action) => {
                 } else {
                     relayboard.relayChartSettings = {};
                     relayboard.live_sensor_data = [];
+                    relayboard.terminal_command = '';
                     relayboard.sensor_data = {};
                     relayboard.current_relay = null;
                 }
@@ -130,6 +145,25 @@ var DashboardReducer = (state,action) => {
                 if (!_.isEqual(newState.relayboards[action.relayboard_id].sensor_data[action.number],action.sensor_data)) {
                     newState.relayboards[action.relayboard_id].sensor_data[action.number] = JSON.parse(action.sensor_data);
                 }
+            }
+            break;
+        case actions.types.SET_TERMINAL_COMMAND:
+            if (newState.relayboards[action.relayboard_id]) {
+                newState.relayboards[action.relayboard_id].terminal_command = action.command;
+            }
+            break;
+        case actions.types.ADD_LINES_TO_TERMINAL_BUFFER:
+            if (newState.relayboards[action.relayboard_id] && action.lines && action.lines.length) {
+                action.lines.forEach(function(line,ley) {
+                    if (line.toString().trim()) {
+                        newState.relayboards[action.relayboard_id].terminal_buffer.push(line.toString().trim());
+                    }
+                })
+            }
+            break;
+        case actions.types.CLEAR_TERMINAL_BUFFER:
+            if (newState.relayboards[action.relayboard_id]) {
+                newState.relayboards[action.relayboard_id].terminal_buffer = [];
             }
             break;
         default:

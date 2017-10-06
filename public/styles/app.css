@@ -80,6 +80,7 @@ a {
 .panel-relaychart .panel-body {
     color: black !important;
     background-color: white;
+    padding:20px !important;
 }
 
 .panel-relaychart .panel-heading {
@@ -93,4 +94,20 @@ a {
 
 .error {
     color: #ffcccc;
+}
+
+div.terminalSession, pre.terminalSession {
+    background-color: black !important;
+    color: lightgreen !important;
+    border-color: black !important;
+    width: 100% !important;
+    height: 500px !important;
+    overflow: auto !important;
+}
+
+input.terminalSession {
+    background-color: black !important;
+    color: lightgreen !important;
+    border-color: black !important;
+    width: 100% !important;
 }

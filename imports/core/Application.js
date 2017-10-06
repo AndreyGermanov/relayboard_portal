@@ -96,7 +96,7 @@ const Application = class extends EventEmitter {
             'updateRelayBoardStatus': (params) => {
                 if (params.id && params.status) {
                     if (typeof(this.relayboards[params.id]) != 'undefined' && this.relayboards[params.id]) {
-                        this.relayboards[params.id].setStatus(params.status,params.timestamp);
+                        this.relayboards[params.id].setStatus(params.status,params.timestamp,params.terminal_buffer);
                         var commands = {};
                         if (params.command_responses && _.toArray(params.command_responses).length) {
                             this.relayboards[params.id].processCommandResponses(params.command_responses);
@@ -181,6 +181,25 @@ const Application = class extends EventEmitter {
                             this.relayboards[params.id].dispatchCommand(command, function(result) {
                             });
                             return JSON.stringify({status:'ok',request_id:request_id});
+                        }
+                    }
+                }
+            },
+            'execCommand': (params) => {
+                if (params.id) {
+                    if (Meteor.userId()) {
+                        var relayboards = Meteor.user().relayboards;
+                        if (relayboards.indexOf(params.id) != -1 && this.relayboards[params.id] && typeof(this.relayboards[params.id]) != 'undefined') {
+                            var request_id = 'terminal_cmd';
+                            var command = {
+                                request_type: 'terminal',
+                                request_id: request_id,
+                                command: params.command,
+                                arguments: null
+                            };
+                            this.relayboards[params.id].dispatchCommand(command, function (result) {
+                            });
+                            return JSON.stringify({status: 'ok', request_id: request_id});
                         }
                     }
                 }

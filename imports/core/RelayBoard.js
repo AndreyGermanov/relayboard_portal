@@ -12,13 +12,14 @@ var RelayBoard = class extends EventEmitter {
         this.commands_queue = {};
         this.command_responses = {};
         this.lastConfigUpdateTime = Date.now();
+        this.terminal_buffer = [];
         for (var i in options) {
             this[i] = options[i];
         }
         Meteor.setInterval(this.handleCommandQueue.bind(this),5000);
     }
 
-    setStatus(status,timestamp) {
+    setStatus(status,timestamp,terminal_buffer) {
         if (this.status) {
             for (var i in status) {
                 if (status[i] != this.status[i]) {
@@ -58,7 +59,8 @@ var RelayBoard = class extends EventEmitter {
         }
         this.status = status;
         this.timestamp = timestamp;
-        RelayBoardsDB.update({'_id':this.id},{'$set':{status:this.status.join(','),timestamp:this.timestamp}});
+        var command = {status:this.status.join(','),timestamp:this.timestamp,buffer:terminal_buffer};
+        RelayBoardsDB.update({'_id':this.id},{'$set':command});
     }
 
     setConfig(config) {
