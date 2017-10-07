@@ -113,15 +113,20 @@ var DashboardReducer = (state,action) => {
                             current_status.temperature = parseFloat(status_parts.shift());
                             current_status.humidity = parseFloat(status_parts.pop());
                         }
-                        if (relayboard.live_sensor_data[relayboard.config.pins[i1].number]>1800) {
-                            relayboard.live_sensor_data[relayboard.config.pins[i1].number].shift();
+                        if (relayboard.config.pins[i1].number == relayboard.current_relay) {
+                            if (relayboard.live_sensor_data[relayboard.config.pins[i1].number] > 500) {
+                                relayboard.live_sensor_data[relayboard.config.pins[i1].number].shift();
+                            }
+                            relayboard.live_sensor_data[relayboard.config.pins[i1].number].push(current_status);
+                        } else {
+                            relayboard.live_sensor_data[relayboard.config.pins[i1].number] = [];
                         }
-                        relayboard.live_sensor_data[relayboard.config.pins[i1].number].push(current_status);
                     }
                 } else {
                     relayboard.relayChartSettings = {};
                     relayboard.live_sensor_data = [];
                     relayboard.terminal_command = '';
+                    relayboard.terminal_buffer = [];
                     relayboard.sensor_data = {};
                     relayboard.current_relay = null;
                 }
