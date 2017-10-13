@@ -35,7 +35,7 @@ const Users = class extends Entity {
                     <tr key={'user_'+user._id}>
                         <td><Link to={{pathname:'/user/'+user._id}}>{user.emails[0].address}</Link></td>
                         <td><Link to={{pathname:'/user/'+user._id}}>{user.username}</Link></td>
-                        <td><Link to={{pathname:'/user/'+user._id}}>{relayboards_string.join('<br>')}</Link></td>
+                        <td><Link to={{pathname:'/user/'+user._id}} dangerouslySetInnerHTML={{__html:relayboards_string.join('<br/>')}}></Link></td>
                         <td>
                             <button onClick={this.props.onDeleteClick.bind(this,user._id)}
                                     className="btn btn-xs btn-danger"><span className="fa fa-remove"/>&nbsp;Delete

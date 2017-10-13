@@ -1,0 +1,5 @@
+#!/bin/bash
+export METEOR_ALLOW_SUPERUSER=true
+export MONGO_URL=mongodb://localhost:27017/meteor
+cd /opt/relayboard_portal
+/usr/local/bin/meteor >> logs/stdout.log 2>> logs/stderr.log
