@@ -10,24 +10,24 @@ const Relayboard = class extends Entity {
     
     render() {
         var relay_columns = null,
-            relayboard = this.props.relayboard;
-        var relayboard_status = relayboard.status;
-        if (relayboard_status) {
-            relayboard_status = relayboard_status.split(',');
-        }
+            relayboard = this.props.relayboard,
+            relayboard_status = relayboard.status;
         if (relayboard.config) {
             relay_columns = relayboard.config.pins.map(function (relay, index) {
                 var status = 0;
                 if (relay.type == 'temperature') {
                     status = '0|0'
                 }
-                if (relayboard_status && relayboard_status[index]) {
-                    status = relayboard_status[index];
+                var timestamp = relayboard.status_timestamp;
+                if (relayboard_status && typeof(relayboard_status[parseInt(relay.number)]) != 'undefined') {
+                    status = relayboard_status[parseInt(relay.number)];
+                } else {
+                    timestamp = null;
                 }
                 /*jshint ignore:start */
                 return <RelayContainer key={'relayboard_'+relayboard._id+'_'+relay.number}
                                        status={status}
-                                       timestamp={relayboard.status_timestamp}
+                                       timestamp={timestamp}
                                        config={relayboard.config.pins[index]}
                                        index={index}
                                        relayboard_id={relayboard._id}

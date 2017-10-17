@@ -98,8 +98,11 @@ var DashboardReducer = (state,action) => {
                     }
                     relayboard.terminal_buffer = newState.relayboards[relayboard._id].terminal_buffer;
                     relayboard.terminal_command = newState.relayboards[relayboard._id].terminal_command;
-                    var status = relayboard.status.split(',');
+                    var status = relayboard.status;
                     for (var i1 in relayboard.config.pins) {
+                        if (typeof(status[relayboard.config.pins[i1].number]) == 'undefined') {
+                            continue;
+                        }
                         if (!relayboard.live_sensor_data[relayboard.config.pins[i1].number]) {
                             relayboard.live_sensor_data[relayboard.config.pins[i1].number] = [];
                         }
@@ -107,9 +110,9 @@ var DashboardReducer = (state,action) => {
                             time: moment(relayboard.timestamp).format('DD-MM-YYYY HH:mm:ss')
                         };
                         if (relayboard.config.pins[i1].type == 'relay') {
-                            current_status.status = parseInt(status[i1]);
+                            current_status.status = parseInt(status[relayboard.config.pins[i1].number]);
                         } else if (relayboard.config.pins[i1].type == 'temperature') {
-                            var status_parts = status[i1].toString().split('|');
+                            var status_parts = status[relayboard.config.pins[i1].number].toString().split('|');
                             current_status.temperature = parseFloat(status_parts.shift());
                             current_status.humidity = parseFloat(status_parts.pop());
                         }

@@ -12,7 +12,7 @@ const mapStateToProps = (state,ownProps) => {
         index: ownProps.index,
         online: ownProps.online,
         connected: ownProps.connected,
-        timestamp: moment(ownProps.timestamp).format('HH:mm:ss')
+        timestamp: ownProps.timestamp ? moment(ownProps.timestamp).format('HH:mm:ss') : ''
     };
 };
 

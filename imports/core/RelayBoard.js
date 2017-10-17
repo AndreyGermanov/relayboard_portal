@@ -21,48 +21,11 @@ var RelayBoard = class extends EventEmitter {
     }
 
     setStatus(status,timestamp,terminal_buffer) {
-        if (this.status) {
-            for (var i in status) {
-                if (status[i] != this.status[i]) {
-                    if (this.config.pins[i]) {
-                        if (this.config.pins[i].type == 'relay') {
-                            SensorData.insert({
-                                pin: parseInt(this.config.pins[i].number),
-                                status: parseInt(status[i]),
-                                timestamp: timestamp, relayboard_id: this.id
-                            });
-                        } else if (this.config.pins[i].type == 'temperature') {
-                            var parts = status[i].split('|');
-                            var record = {
-                                pin: parseInt(this.config.pins[i].number),
-                                timestamp: timestamp,
-                                relayboard_id: this.id
-                            };
-                            var changed = false;
-                            if (this.status && this.status[i]) {
-                                var previous_parts = this.status[i].split('|');
-                                if (parts[0] != previous_parts[0]) {
-                                    record.temperature = parseFloat(parts[0]);
-                                    changed = true;
-                                }
-                                if (parts[1] != previous_parts[1]) {
-                                    record.humidity = parseFloat(parts[1]);
-                                    changed = true;
-                                }
-                                if (changed) {
-                                    SensorData.insert(record);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
         this.status = status;
         this.status_timestamp = timestamp;
         this.online_timestamp = Date.now();
         var command = {
-            status:this.status.join(','),
+            status:this.status,
             status_timestamp:this.status_timestamp,
             online_timestamp:this.online_timestamp,
             online: this.getOnline(),
