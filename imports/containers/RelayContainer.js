@@ -11,6 +11,7 @@ const mapStateToProps = (state,ownProps) => {
         config: ownProps.config,
         index: ownProps.index,
         online: ownProps.online,
+        connected: ownProps.connected,
         timestamp: moment(ownProps.timestamp).format('HH:mm:ss')
     };
 };

@@ -8,13 +8,13 @@ const Relay = class extends Entity {
             var command = 'ON',
                 color = 'red';
             /*jshint ignore:start */
-            var link = <span className="fa fa-power-off relay-cell-img" style={{color:'gray'}}></span>
+            var link = <span title='NO CONNECTION' className="fa fa-power-off relay-cell-img" style={{color:'gray'}}></span>
             /*jshint ignore:end */
             if (this.props.status == 1) {
                 command = 'OFF';
                 color = 'green';
             }
-            if (this.props.online) {
+            if (this.props.online && this.props.connected) {
                 /*jshint ignore:start */
                 link = <a key={'link_'+this.props.relayboard_id+'_'+this.props.config.number}>
                     <span onClick={this.props.onRelayClick.bind(this,this.props.relayboard_id,command,this.props.config.number)}
@@ -58,8 +58,12 @@ const Relay = class extends Entity {
                         {this.props.config.number}
                     </div>
                     <div>
-                        <h3><span style={{color:'yellow'}}><span className="ion-android-sunny"/>&nbsp;{temperature} C</span></h3>
-                        <h3><span style={{color:'cyan'}}><span className="fa fa-tint"/>&nbsp;{humidity} %</span></h3>
+                        <h3><span style={{color:(this.props.online && this.props.connected) ? 'yellow': 'gray'}}>
+                            <span className="ion-android-sunny"/>&nbsp;{temperature} C</span>
+                        </h3>
+                        <h3><span style={{color:(this.props.online && this.props.connected) ? 'cyan': 'gray'}}>
+                            <span className="fa fa-tint"/>&nbsp;{humidity} %</span>
+                        </h3>
                     </div>
                     <div>
                         {this.props.config.title}

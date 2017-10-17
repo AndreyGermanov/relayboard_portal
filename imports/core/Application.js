@@ -52,7 +52,7 @@ const Application = class extends EventEmitter {
             }
         });
         var methods = {
-            'registerRelayBoard': (params) => {
+            registerRelayBoard: (params) => {
                 if (Meteor.userId()) {
                     var id = params.id;
                     if (!this.relayboards[id] || typeof(this.relayboards[id]) == 'undefined') {
@@ -69,7 +69,7 @@ const Application = class extends EventEmitter {
                     return JSON.stringify({status:'error',message:'Not authenticated'});
                 }
             },
-            'updateRelayBoardConfig': (params) => {
+            updateRelayBoardConfig: (params) => {
                 if (Meteor.userId()) {
                     var id = params.id;
                     params.config.pins = _.orderBy(params.config.pins,['number'],['asc']);
@@ -80,7 +80,7 @@ const Application = class extends EventEmitter {
                     return JSON.stringify({status:'ok'});
                 }
             },
-            'unregisterRelayBoard': (params) => {
+            unregisterRelayBoard: (params) => {
                 if (Meteor.userId()) {
                     var id = params.id;
                     if (this.relayboards[id]) {
@@ -93,7 +93,7 @@ const Application = class extends EventEmitter {
                     return JSON.stringify({status:'error',message:'Not authenticated'});
                 }
             },
-            'updateRelayBoardStatus': (params) => {
+            updateRelayBoardStatus: (params) => {
                 if (params.id && params.status) {
                     if (typeof(this.relayboards[params.id]) != 'undefined' && this.relayboards[params.id]) {
                         this.relayboards[params.id].setStatus(params.status,params.timestamp,params.terminal_buffer);
@@ -120,7 +120,7 @@ const Application = class extends EventEmitter {
                     return JSON.stringify({status:'error',message:'Invalid request'});
                 }
             },
-            'getConfig': (params) => {
+            getConfig: (params) => {
                 if (Meteor.userId()) {
                     var relayboards = Meteor.user().relayboards;
                     results = [];
@@ -138,7 +138,7 @@ const Application = class extends EventEmitter {
                     return JSON.stringify({status:'error',message:'Authentication error'});
                 }
             },
-            'getStatus': (params) => {
+            getStatus: (params) => {
                 if (Meteor.userId()) {
                     var relayboards = Meteor.user().relayboards;
                     statuses = [];
@@ -149,6 +149,7 @@ const Application = class extends EventEmitter {
                             var status = {
                                 id: relayboard.id,
                                 online: relayboard.getOnline(),
+                                connected: relayboard.getConnected(),
                                 status: relayboard.getStatus(),
                                 timestamp: relayboard.getTimestamp()
                             };
@@ -166,7 +167,7 @@ const Application = class extends EventEmitter {
                     return JSON.stringify({statuses:statuses,command_responses:responses});
                 }
             },
-            'switchRelay': (params) => {
+            switchRelay: (params) => {
                 if (params.id && params.number && params.mode) {
                     if (Meteor.userId()) {
                         var relayboards = Meteor.user().relayboards;
@@ -185,7 +186,7 @@ const Application = class extends EventEmitter {
                     }
                 }
             },
-            'execCommand': (params) => {
+            execCommand: (params) => {
                 if (params.id) {
                     if (Meteor.userId()) {
                         var relayboards = Meteor.user().relayboards;

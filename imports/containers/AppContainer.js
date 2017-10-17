@@ -38,7 +38,16 @@ const mapDispatchToProps = (dispatch) => {
 var AppContainer = withTracker(() => {
     Meteor.subscribe('Meteor.users');
     Meteor.subscribe('relayboards');
-    var relayboards = RelayboardModel.find({},{'_id':1,'status':1,'timestamp':1,'config':1}).fetch();
+    var relayboards = RelayboardModel.find({},
+        {
+            '_id':1,
+            'status':1,
+            'online_timestamp':1,
+            'status_timestamp':1,
+            'connected':1,
+            'online':1,
+            'config':1
+        }).fetch();
     Store.store.dispatch(dashboardActions.setRelayBoards(relayboards));
     return {
         users: Meteor.users.find({},{relayboards:1,role:1}).fetch(),

@@ -11,6 +11,7 @@ var RelayBoard = class extends EventEmitter {
         this.id = id;
         this.commands_queue = {};
         this.command_responses = {};
+        this.connected = {};
         this.lastConfigUpdateTime = Date.now();
         this.terminal_buffer = [];
         for (var i in options) {
@@ -58,19 +59,58 @@ var RelayBoard = class extends EventEmitter {
             }
         }
         this.status = status;
-        this.timestamp = timestamp;
-        var command = {status:this.status.join(','),timestamp:this.timestamp,buffer:terminal_buffer};
-        RelayBoardsDB.update({'_id':this.id},{'$set':command});
+        this.status_timestamp = timestamp;
+        this.online_timestamp = Date.now();
+        var command = {
+            status:this.status.join(','),
+            status_timestamp:this.status_timestamp,
+            online_timestamp:this.online_timestamp,
+            online: this.getOnline(),
+            connected: this.getConnected(),
+            buffer:terminal_buffer,
+        };
+        RelayBoardsDB.update(
+            {
+                '_id':this.id
+            },
+            {
+                '$set':command
+            }
+        );
     }
 
     setConfig(config) {
         this.config = config;
         this.config_timestamp = Date.now();
-        RelayBoardsDB.update({'_id':this.id},{'$set':{config:this.config,config_timestamp:this.config_timestamp}});
+        RelayBoardsDB.update(
+            {'_id':this.id},
+            {
+                '$set':
+                {
+                    config:this.config,
+                    config_timestamp:this.config_timestamp
+                }
+            }
+        );
     }
 
     getStatus() {
         return this.status;
+    }
+
+    getConnected() {
+        RelayBoardsDB.update(
+            {
+                '_id':this.id
+            },
+            {
+                '$set':
+                {
+                    connected:Date.now()-this.status_timestamp<10000
+                }
+            }
+        );
+        return Date.now()-this.status_timestamp<10000;
     }
 
     getConfig() {
@@ -79,8 +119,18 @@ var RelayBoard = class extends EventEmitter {
     }
 
     getOnline() {
-        RelayBoardsDB.update({'_id':this.id},{'$set':{online:Date.now()-this.timestamp<10000}});
-        return Date.now()-this.timestamp<10000;
+        RelayBoardsDB.update(
+            {
+                '_id':this.id
+            },
+            {
+                '$set':
+                {
+                    online:Date.now()-this.online_timestamp<10000
+                }
+            }
+        );
+        return Date.now()-this.online_timestamp<10000;
     }
 
     getTimestamp() {
