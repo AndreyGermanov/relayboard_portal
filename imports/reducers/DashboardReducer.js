@@ -107,7 +107,7 @@ var DashboardReducer = (state,action) => {
                             relayboard.live_sensor_data[relayboard.config.pins[i1].number] = [];
                         }
                         var current_status = {
-                            time: moment(relayboard.timestamp).format('DD-MM-YYYY HH:mm:ss')
+                            time: moment(relayboard.status_timestamp).format('DD-MM-YYYY HH:mm:ss')
                         };
                         if (relayboard.config.pins[i1].type == 'relay') {
                             current_status.status = parseInt(status[relayboard.config.pins[i1].number]);
@@ -117,7 +117,7 @@ var DashboardReducer = (state,action) => {
                             current_status.humidity = parseFloat(status_parts.pop());
                         }
                         if (relayboard.config.pins[i1].number == relayboard.current_relay) {
-                            if (relayboard.live_sensor_data[relayboard.config.pins[i1].number] > 500) {
+                            if (relayboard.live_sensor_data[relayboard.config.pins[i1].number] > 100) {
                                 relayboard.live_sensor_data[relayboard.config.pins[i1].number].shift();
                             }
                             relayboard.live_sensor_data[relayboard.config.pins[i1].number].push(current_status);
