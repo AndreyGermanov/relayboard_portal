@@ -5,6 +5,7 @@ import RelayBoard from './RelayBoard';
 import RelayBoardsDB  from '../models/RelayBoard';
 import Users from './Users';
 import _ from 'lodash';
+import async from 'async';
 
 const Application = class extends EventEmitter {
     constructor() {
@@ -118,6 +119,19 @@ const Application = class extends EventEmitter {
                     }
                 } else {
                     return JSON.stringify({status:'error',message:'Invalid request'});
+                }
+            },
+            addRelayBoardData: (params) => {
+                if (params.id && params.data) {
+                    if (this.relayboards[params.id]) {
+                        try {
+                            this.relayboards[params.id].saveData(params.data, function (result) {
+                                throw result;
+                            });
+                        } catch (e) {
+                            return e;
+                        }
+                    }
                 }
             },
             getConfig: (params) => {

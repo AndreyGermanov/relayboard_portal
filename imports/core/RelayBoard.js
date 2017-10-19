@@ -156,6 +156,12 @@ var RelayBoard = class extends EventEmitter {
 
         return SensorData.find(condition,{fields:fields_to_display,sort:['timestamp','asc']}).fetch();
     }
+
+    saveData(data,callback) {
+        if (callback) {
+            callback({status:'ok'});
+        }
+    }
 };
 
 export default RelayBoard;
