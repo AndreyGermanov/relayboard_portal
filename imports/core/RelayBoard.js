@@ -3,6 +3,7 @@ import RelayBoardsDB  from '../models/RelayBoard';
 import SensorData from '../models/SensorData';
 import {Meteor} from 'meteor/meteor';
 import _ from 'lodash';
+import async from 'async';
 
 var RelayBoard = class extends EventEmitter {
 
@@ -158,9 +159,49 @@ var RelayBoard = class extends EventEmitter {
     }
 
     saveData(data,callback) {
-        if (callback) {
-            callback({status:'ok'});
-        }
+        var aggregate_data = {};
+        data.split('|').forEach((line) => {
+            try {
+                line = JSON.parse(line);
+                if (line.timestamp<1483228800000) {
+                    return;
+                }
+                if (!aggregate_data[line.aggregate_level]) {
+                    aggregate_data[line.aggregate_level] = [];
+                }
+                var row = {
+                    timestamp: line.timestamp,
+                    sensor_id: line.sensor_id
+                }
+                for (var field in line.fields) {
+                    for (var aggregate in line.fields[field]) {
+                        row[field+'_'+aggregate] = line.fields[field][aggregate];
+                    }
+                }
+                aggregate_data[line.aggregate_level].push(row);
+            } catch (e) {
+            }
+        },this);
+        async.eachOfSeries(aggregate_data,(aggregate,aggregate_index,callback) => {
+            async.eachOfSeries(aggregate,(row,row_index,callback) => {
+                SensorData[aggregate_index].update(
+                    {
+                        timestamp:row.timestamp,
+                        sensor_id:row.sensor_id
+                    },row,
+                    {
+                        upsert:true
+                    }
+                );
+                callback();
+            }, () => {
+                callback();
+            })
+        },() => {
+            if (callback) {
+                callback({status:'ok'});
+            }
+        });
     }
 };
 
