@@ -27,7 +27,7 @@ data_config.aggregate_levels.forEach((aggregate) => {
     SensorData[aggregate]._ensureIndex({"relayboard_id":1,"sensor_id":1});
 });
 
-const updateAggregates = async() => {
+const updateAggregates = () => {
     async.eachSeries(Application.relayboards,(relayboard,callback) => {
         async.eachSeries(relayboard.config.pins,(sensor,callback) => {
             async.eachOfSeries(data_config.aggregate_levels,(aggregate_level,aggregate_index,callback) => {
@@ -43,28 +43,28 @@ const updateAggregates = async() => {
                     fields_to_insert = {};
 
 
-                if (sensor.type == 'temperature') {
-                    fields_to_get['temperature_avg'] = {$avg:'$temperature_avg'};
-                    fields_to_get['temperature_min'] = {$avg:'$temperature_min'};
-                    fields_to_get['temperature_max'] = {$avg:'$temperature_max'};
-                    fields_to_get['humidity_avg'] = {$avg:'$humidity_avg'};
-                    fields_to_get['humidity_min'] = {$avg:'$humidity_min'};
-                    fields_to_get['humidity_max'] = {$avg:'$humidity_max'};
-                    fields_to_insert['temperature_avg'] = 1;
-                    fields_to_insert['temperature_min'] = 1;
-                    fields_to_insert['temperature_max'] = 1;
-                    fields_to_insert['humidity_avg'] = 1;
-                    fields_to_insert['humidity_min'] = 1;
-                    fields_to_insert['humidity_max'] = 1;
-                } else if (sensor.type == 'relay') {
-                    fields_to_get['status_avg'] = {$avg:'$status_avg'};
-                    fields_to_get['status_min'] = {$avg:'$status_min'};
-                    fields_to_get['status_max'] = {$avg:'$status_max'};
-                    fields_to_insert['status_avg'] = 1;
-                    fields_to_insert['status_min'] = 1;
-                    fields_to_insert['status_max'] = 1;
+                switch (sensor.type) {
+                    case 'temperature':
+                        fields_to_get['temperature_avg'] = {$avg:'$temperature_avg'};
+                        fields_to_get['temperature_min'] = {$avg:'$temperature_min'};
+                        fields_to_get['temperature_max'] = {$avg:'$temperature_max'};
+                        fields_to_get['humidity_avg'] = {$avg:'$humidity_avg'};
+                        fields_to_get['humidity_min'] = {$avg:'$humidity_min'};
+                        fields_to_get['humidity_max'] = {$avg:'$humidity_max'};
+                        fields_to_insert['temperature_avg'] = fields_to_insert['temperature_min'] = fields_to_insert['temperature_max'] = 1;
+                        fields_to_insert['humidity_avg'] = fields_to_insert['humidity_min'] = fields_to_insert['humidity_max'] = 1;
+                        break;
+                    case 'relay':
+                        fields_to_get['status_avg'] = {$avg:'$status_avg'};
+                        fields_to_get['status_min'] = {$avg:'$status_min'};
+                        fields_to_get['status_max'] = {$avg:'$status_max'};
+                        fields_to_insert['status_avg'] = fields_to_insert['status_min'] = fields_to_insert['status_max'] = 1;
+                        break;
+                    default:
                 }
+
                 var last_timestamp = 0;
+
                 async.series([
                     function(callback) {
                         var result = next_source.find(
