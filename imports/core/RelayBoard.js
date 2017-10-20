@@ -4,6 +4,7 @@ import SensorData from '../models/SensorData';
 import {Meteor} from 'meteor/meteor';
 import _ from 'lodash';
 import async from 'async';
+import data_config from '../config/data';
 
 var RelayBoard = class extends EventEmitter {
 
@@ -134,7 +135,7 @@ var RelayBoard = class extends EventEmitter {
         }
     }
     
-    getSensorData(params) {
+    async getSensorData(params) {
 
         var fields_to_display = {timestamp:{$multiply:["$timestamp",1000]},_id:0};
 
@@ -148,14 +149,50 @@ var RelayBoard = class extends EventEmitter {
                 condition_exists = {};
             }
         }
-        var condition = {},
-            result = [];
+        var result = {};
 
         var condition = {relayboard_id:params.relayboard_id,
             sensor_id:params.number,
             '$or': conditions_exists,
             '$and': [ {'timestamp': {'$gte': params.dateStart/1000}},{'timestamp': {'$lte':params.dateEnd/1000}}]};
-        return SensorData[15].aggregate([{$match: condition}, {$project: fields_to_display}, {$sort: {'timestamp': 1}}], {cursor: {batchSize: 1000}});
+        var aggregates = _.cloneDeep(data_config.aggregate_levels);
+        aggregates.reverse();
+        var timediff = (params.dateEnd/1000 - params.dateStart/1000);
+        var closest_aggregate = Math.floor(timediff/50);
+        var start_aggregate = aggregates.reduce(function(prev, curr) {
+            return (Math.abs(curr - closest_aggregate) < Math.abs(prev - closest_aggregate) ? curr : prev);
+        });
+        result[start_aggregate] = await SensorData[start_aggregate].aggregate([{$match: condition}, {$project: fields_to_display}, {$sort: {'timestamp': 1}}], {cursor: {batchSize: 1000}});
+        if (result[start_aggregate] && result[start_aggregate].length) {
+            var last_timestamp = result[start_aggregate][result[start_aggregate].length - 1].timestamp / 1000;
+            await async.eachOfSeries(aggregates, async(aggregate, index, callback) => {
+                if (aggregate >= start_aggregate) {
+                    callback();
+                    return;
+                }
+                if (last_timestamp >= params.dateEnd / 1000) {
+                    callback(true);
+                    return;
+                }
+                condition = {
+                    relayboard_id: params.relayboard_id,
+                    sensor_id: params.number,
+                    '$or': conditions_exists,
+                    '$and': [{'timestamp': {'$gt': last_timestamp}}, {'timestamp': {'$lte': params.dateEnd / 1000}}]
+                };
+                var add_result = await SensorData[aggregate].aggregate([{$match: condition}, {$project: fields_to_display}, {$sort: {'timestamp': 1}}], {cursor: {batchSize: 1000}});
+                if (add_result && add_result.length) {
+                    result[aggregate] = add_result;
+                    last_timestamp = result[aggregate][result[aggregate].length - 1].timestamp / 1000;
+                }
+                callback();
+            }, function () {
+                return result;
+            })
+            return result;
+        } else {
+            return [];
+        }
     }
 
     saveData(data,callback) {
