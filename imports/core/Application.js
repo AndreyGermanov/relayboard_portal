@@ -54,6 +54,7 @@ const Application = class extends EventEmitter {
         });
         var methods = {
             registerRelayBoard: (params) => {
+                console.log(params);
                 if (Meteor.userId()) {
                     var id = params.id;
                     if (!this.relayboards[id] || typeof(this.relayboards[id]) == 'undefined') {
@@ -219,17 +220,11 @@ const Application = class extends EventEmitter {
                     }
                 }
             },
-            getSensorData: (params) => {
+            getSensorData: async(params) => {
                 if (Meteor.userId()) {
                     if (params.relayboard_id && params.number && params.series && params.series.length) {
                         var relayboard = this.relayboards[params.relayboard_id];
-                        var sensor_data = relayboard.getSensorData(params);
-                        try {
-                            sensor_data = JSON.stringify(sensor_data);
-                        } catch (e) {
-                            return e;
-                        }
-                        return sensor_data;
+                        return await relayboard.getSensorData(params);
                     }
                 }
             }

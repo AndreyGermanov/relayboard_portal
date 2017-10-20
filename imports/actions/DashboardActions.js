@@ -80,12 +80,13 @@ var DashboardActions = class {
                     dateStart:props.settings.dateStart.unix()*1000,
                     dateEnd:props.settings.dateEnd.unix()*1000
                 }, function(err,result) {
-                if (!err && result) {
-                    dispatch(self.updateSensorData(props.relayboard_id,props.number,result));
-                } else {
-                    console.log(err);
+                    if (!err && result) {
+                        dispatch(self.updateSensorData(props.relayboard_id,props.number,result));
+                    } else {
+                        console.log(err);
+                    }
                 }
-            });
+            );
         };
     }
 

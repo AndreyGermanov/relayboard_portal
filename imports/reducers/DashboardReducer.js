@@ -151,7 +151,7 @@ var DashboardReducer = (state,action) => {
                     newState.relayboards[action.relayboard_id].sensor_data = {};
                 }
                 if (!_.isEqual(newState.relayboards[action.relayboard_id].sensor_data[action.number],action.sensor_data)) {
-                    newState.relayboards[action.relayboard_id].sensor_data[action.number] = JSON.parse(action.sensor_data);
+                    newState.relayboards[action.relayboard_id].sensor_data[action.number] = action.sensor_data;
                 }
             }
             break;

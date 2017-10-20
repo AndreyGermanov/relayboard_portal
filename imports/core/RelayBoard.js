@@ -5,6 +5,18 @@ import {Meteor} from 'meteor/meteor';
 import _ from 'lodash';
 import async from 'async';
 
+Mongo.Collection.prototype.aggregate = function(pipelines, options) {
+    var coll;
+    if (this.rawCollection) {
+        // >= Meteor 1.0.4
+        coll = this.rawCollection();
+    } else {
+        // < Meteor 1.0.4
+        coll = this._getCollection();
+    }
+    return coll.aggregate(pipelines, options).toArray();
+}
+
 var RelayBoard = class extends EventEmitter {
 
     constructor(id,options) {
@@ -136,26 +148,26 @@ var RelayBoard = class extends EventEmitter {
     
     getSensorData(params) {
 
-        var fields_to_display = {timestamp:1};
+        var fields_to_display = {timestamp:{$multiply:["$timestamp",1000]},_id:0};
 
         var conditions_exists = [],
             condition_exists = {};
-
         for (var i in params.series) {
             if (typeof(fields_to_display[params.series[i]]) == 'undefined') {
-                fields_to_display[params.series[i]] = 1;
-                condition_exists[params.series[i]] = {'$exists':true};
+                fields_to_display[params.series[i]] = "$"+params.series[i]+'_avg';
+                condition_exists[params.series[i]+'_avg'] = {'$exists':true};
                 conditions_exists.push(condition_exists);
                 condition_exists = {};
             }
         }
+        var condition = {},
+            result = [];
 
         var condition = {relayboard_id:params.relayboard_id,
-            pin:params.number,
+            sensor_id:params.number,
             '$or': conditions_exists,
-            '$and': [ {'timestamp': {'$gte': params.dateStart}},{'timestamp': {'$lte':params.dateEnd}}]};
-
-        return SensorData.find(condition,{fields:fields_to_display,sort:['timestamp','asc']}).fetch();
+            '$and': [ {'timestamp': {'$gte': params.dateStart/1000}},{'timestamp': {'$lte':params.dateEnd/1000}}]};
+        return SensorData[15].aggregate([{$match: condition}, {$project: fields_to_display}, {$sort: {'timestamp': 1}}], {cursor: {batchSize: 1000}});
     }
 
     saveData(data,callback) {
@@ -163,13 +175,14 @@ var RelayBoard = class extends EventEmitter {
         data.split('|').forEach((line) => {
             try {
                 line = JSON.parse(line);
-                if (line.timestamp<1483228800000) {
+                if (line.timestamp<1483228800) {
                     return;
                 }
                 if (!aggregate_data[line.aggregate_level]) {
                     aggregate_data[line.aggregate_level] = [];
                 }
                 var row = {
+                    relayboard_id: this.id,
                     timestamp: line.timestamp,
                     sensor_id: line.sensor_id
                 }
