@@ -5,18 +5,6 @@ import {Meteor} from 'meteor/meteor';
 import _ from 'lodash';
 import async from 'async';
 
-Mongo.Collection.prototype.aggregate = function(pipelines, options) {
-    var coll;
-    if (this.rawCollection) {
-        // >= Meteor 1.0.4
-        coll = this.rawCollection();
-    } else {
-        // < Meteor 1.0.4
-        coll = this._getCollection();
-    }
-    return coll.aggregate(pipelines, options).toArray();
-}
-
 var RelayBoard = class extends EventEmitter {
 
     constructor(id,options) {
