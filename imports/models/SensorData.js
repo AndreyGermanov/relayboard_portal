@@ -128,7 +128,6 @@ const updateAggregates = () => {
                             }]
                         ).then((result) => {
                             if (result) {
-                                console.log(data_config.aggregate_levels[aggregate_index+1]);
                                 for (var i in result) {
                                     var record = _.cloneDeep(result[i]);
                                     var record = {
@@ -138,7 +137,6 @@ const updateAggregates = () => {
                                         ...record
                                     };
                                     delete record._id;
-                                    console.log(record);
                                     next_source.update(
                                         {
                                             relayboard_id:relayboard.id,
