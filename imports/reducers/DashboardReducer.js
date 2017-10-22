@@ -90,12 +90,16 @@ var DashboardReducer = (state,action) => {
                     relayboard.relayChartSettings = _.cloneDeep(newState.relayboards[relayboard._id].relayChartSettings);
                     relayboard.current_relay = newState.relayboards[relayboard._id].current_relay;
                     relayboard.sensor_data = newState.relayboards[relayboard._id].sensor_data;
-                    if (relayboard.buffer && relayboard.buffer.length) {
+                    if (relayboard.buffer && relayboard.buffer.length && !_.isEqual(relayboard.buffer,newState.relayboards[relayboard._id].prev_buffer)) {
+                        relayboard.prev_buffer = _.cloneDeep(relayboard.buffer);
                         relayboard.buffer = relayboard.buffer.shift();
                         for (var index in relayboard.buffer) {
                             newState.relayboards[relayboard._id].terminal_buffer.push(relayboard.buffer[index]);
                         }
-                    }
+                    };
+                    if (!newState.relayboards[relayboard._id].terminal_buffer || typeof(newState.relayboards[relayboard._id].terminal_buffer) == 'undefined') {
+                        newState.relayboards[relayboard._id].terminal_buffer = [];
+                    };
                     relayboard.terminal_buffer = newState.relayboards[relayboard._id].terminal_buffer;
                     relayboard.terminal_command = newState.relayboards[relayboard._id].terminal_command;
                     var status = relayboard.status;
@@ -167,7 +171,7 @@ var DashboardReducer = (state,action) => {
             break;
         case actions.types.ADD_LINES_TO_TERMINAL_BUFFER:
             if (newState.relayboards[action.relayboard_id] && action.lines && action.lines.length) {
-                action.lines.forEach(function(line,ley) {
+                action.lines.forEach(function(line) {
                     if (line.toString().trim()) {
                         newState.relayboards[action.relayboard_id].terminal_buffer.push(line.toString().trim());
                     }
