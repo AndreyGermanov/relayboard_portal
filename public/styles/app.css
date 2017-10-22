@@ -111,3 +111,7 @@ input.terminalSession {
     border-color: black !important;
     width: 100% !important;
 }
+
+.recharts-tooltip-label {
+    color: black !important;
+}

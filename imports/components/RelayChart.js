@@ -12,27 +12,6 @@ const RelayChart = class extends Entity {
     }
 
     renderRelayChart() {
-        var data = [];
-        if (this.props.sensor_data && this.props.sensor_data.length) {
-            var firstRecord = this.props.sensor_data[0],
-                timeFrom = firstRecord.timestamp,
-                prev_rounded_timestamp = Math.round(timeFrom/60000)*60000,
-                previous_status = 0,
-                status = 0;
-            if (this.props.period != 'live') {
-                for (var i in this.props.sensor_data) {
-                    if (this.props.sensor_data[i].status === null) {
-                        continue;
-                    }
-                    data.push({
-                        time: moment(this.props.sensor_data[i].timestamp).format('DD-MM-YYYY HH:mm:ss'),
-                        status: this.props.sensor_data[i].status
-                    });
-                }
-            } else {
-                data = this.props.sensor_data;
-            }
-        }
 
         var series = this.props.series.map((serie) => {
             var result = {
@@ -61,7 +40,7 @@ const RelayChart = class extends Entity {
         }
 
         /*jshint ignore:start */
-        var chart = <RelayChartWrapper data={data} series={series}/>;
+        var chart = <RelayChartWrapper data={this.props.sensor_data} series={series}/>;
         /*jshint ignore:end */
 
         return (
@@ -108,70 +87,6 @@ const RelayChart = class extends Entity {
     }
 
     renderTemperatureChart() {
-        var data = [];
-        if (this.props.sensor_data && this.props.sensor_data.length) {
-            if (this.props.period != 'live') {
-                var firstRecord = this.props.sensor_data[0],
-                    timeFrom = firstRecord.timestamp,
-                    prev_rounded_timestamp = Math.round(timeFrom / 60000) * 60000,
-                    previous_temperature = 0,
-                    previous_humidity = 0,
-                    number_of_minutes = 0,
-                    minute = 0,
-                    temperature = 0,
-                    humidity = 0;
-
-                for (var i in this.props.sensor_data) {
-                    if (this.props.sensor_data[i].temperature && !previous_temperature) {
-                        previous_temperature = this.props.sensor_data[i].temperature;
-                    }
-                    if (this.props.sensor_data[i].humidity && !previous_humidity) {
-                        previous_humidity = this.props.sensor_data[i].humidity;
-                    }
-                }
-                for (i in this.props.sensor_data) {
-                    if (!this.props.sensor_data[i].temperature) {
-                        continue;
-                    }
-                    var rounded_timestamp = Math.round(this.props.sensor_data[i].timestamp / 60000) * 60000;
-                    number_of_minutes = (rounded_timestamp - prev_rounded_timestamp) / 60000;
-                    for (minute = 0; minute < number_of_minutes; minute++) {
-                        temperature = this.props.sensor_data[i].temperature;
-                        humidity = this.props.sensor_data[i].humidity;
-                        if (!temperature) {
-                            temperature = previous_temperature;
-                        } else {
-                            previous_temperature = temperature;
-                        }
-                        if (!humidity) {
-                            humidity = previous_humidity;
-                        } else {
-                            previous_humidity = humidity;
-                        }
-                        data.push({
-                            time: moment(rounded_timestamp + minute * 60000).format('DD-MM-YYYY HH:mm:ss'),
-                            temperature: temperature,
-                            humidity: humidity
-                        });
-                    }
-                    prev_rounded_timestamp = rounded_timestamp;
-                }
-
-                var current_timestamp = Math.round(moment().unix() * 1000 / 60000) * 60000;
-                number_of_minutes = (current_timestamp - prev_rounded_timestamp) / 60000;
-                for (minute = 0; minute <= number_of_minutes; minute++) {
-                    temperature = previous_temperature;
-                    humidity = previous_humidity;
-                    data.push({
-                        time: moment(prev_rounded_timestamp + minute * 60000).format('DD-MM-YYYY HH:mm:ss'),
-                        temperature: temperature,
-                        humidity: humidity
-                    });
-                }
-            } else {
-                data = this.props.sensor_data;
-            }
-        }
 
         var series = this.props.series.map((serie) => {
             var result = {
@@ -202,7 +117,7 @@ const RelayChart = class extends Entity {
         }
 
         /*jshint ignore:start */
-        var chart = <RelayChartWrapper data={data} series={series}/>;
+        var chart = <RelayChartWrapper data={this.props.sensor_data} series={series}/>;
         /*jshint ignore:end */
 
         return (

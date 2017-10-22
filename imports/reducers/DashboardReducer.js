@@ -153,6 +153,7 @@ var DashboardReducer = (state,action) => {
                 if (!_.isEqual(newState.relayboards[action.relayboard_id].sensor_data[action.number],action.sensor_data)) {
                     newState.relayboards[action.relayboard_id].sensor_data[action.number] = [];
                     for (var i in action.sensor_data) {
+                        action.sensor_data[i].time = moment(action.sensor_data[i].timestamp).format('YYYY-MM-DD HH:mm:ss');
                         newState.relayboards[action.relayboard_id].sensor_data[action.number] = _.concat(newState.relayboards[action.relayboard_id].sensor_data[action.number],
                             action.sensor_data[i]);
                     }

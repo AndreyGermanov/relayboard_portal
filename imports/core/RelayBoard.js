@@ -32,7 +32,7 @@ var RelayBoard = class extends EventEmitter {
             online_timestamp:this.online_timestamp,
             online: this.getOnline(),
             connected: this.getConnected(),
-            buffer:terminal_buffer,
+            buffer:terminal_buffer
         };
         RelayBoardsDB.update(
             {
@@ -141,6 +141,7 @@ var RelayBoard = class extends EventEmitter {
 
         var conditions_exists = [],
             condition_exists = {};
+
         for (var i in params.series) {
             if (typeof(fields_to_display[params.series[i]]) == 'undefined') {
                 fields_to_display[params.series[i]] = "$"+params.series[i]+'_avg';
@@ -149,43 +150,106 @@ var RelayBoard = class extends EventEmitter {
                 condition_exists = {};
             }
         }
-        var result = {};
 
-        var condition = {relayboard_id:params.relayboard_id,
+        var result = [];
+
+        var condition = {
+            relayboard_id:params.relayboard_id,
             sensor_id:params.number,
             '$or': conditions_exists,
-            '$and': [ {'timestamp': {'$gte': params.dateStart/1000}},{'timestamp': {'$lte':params.dateEnd/1000}}]};
+            '$and':
+                [
+                    {
+                        'timestamp': {
+                            '$gte': params.dateStart/1000
+                        }
+                    },
+                    {
+                        'timestamp':
+                        {
+                            '$lte': params.dateEnd/1000
+                        }
+                    }
+                ]
+        };
+
         var aggregates = _.cloneDeep(data_config.aggregate_levels);
+
         aggregates.reverse();
+
         var timediff = (params.dateEnd/1000 - params.dateStart/1000);
+
         var closest_aggregate = Math.floor(timediff/50);
+
         var start_aggregate = aggregates.reduce(function(prev, curr) {
             return (Math.abs(curr - closest_aggregate) < Math.abs(prev - closest_aggregate) ? curr : prev);
         });
-  //      console.log(condition);
-        result[start_aggregate] = await SensorData[start_aggregate].aggregate([{$match: condition}, {$project: fields_to_display}, {$sort: {'timestamp': 1}}], {cursor: {batchSize: 1000}});
-    //    console.log(result);
-        if (result[start_aggregate] && result[start_aggregate].length) {
-            var last_timestamp = result[start_aggregate][result[start_aggregate].length - 1].timestamp / 1000;
+
+        var add_result = await SensorData[start_aggregate].aggregate(
+            [
+                {
+                    $match: condition
+                },
+                {
+                    $project: fields_to_display
+                },
+                {
+                    $sort:
+                    {
+                        'timestamp': 1
+                    }
+                }
+            ],
+            {
+                cursor:
+                {
+                    batchSize: 1000
+                }
+            }
+        );
+
+        result.push(
+            {
+                level:start_aggregate,
+                data: add_result
+            }
+        );
+
+        if (add_result && add_result.length) {
+            var last_timestamp = add_result[add_result.length - 1].timestamp / 1000;
         } else {
             last_timestamp = 0;
         }
+
         for (var i in aggregates) {
             var aggregate = aggregates[i];
-            console.log(aggregate);
             if (aggregate >= start_aggregate) {
                 continue;
             }
             if (last_timestamp >= params.dateEnd / 1000) {
                 break;
             };
+
             condition = {
                 relayboard_id: params.relayboard_id,
                 sensor_id: params.number,
                 '$or': conditions_exists,
-                '$and': [{'timestamp': {'$gt': last_timestamp}}, {'timestamp': {'$lte': params.dateEnd / 1000}}]
+                '$and': [
+                    {
+                        'timestamp':
+                        {
+                            '$gt': last_timestamp
+                        }
+                    },
+                    {
+                        'timestamp':
+                        {
+                            '$lte': params.dateEnd / 1000
+                        }
+                    }
+                ]
             };
-            //console.log(condition);
+
             var add_result = await SensorData[aggregate].aggregate(
                 [
                     {
@@ -202,9 +266,10 @@ var RelayBoard = class extends EventEmitter {
                     cursor: {batchSize: 1000}
                 }
             );
+
             if (add_result && add_result.length) {
-                result[aggregate] = add_result;
-                last_timestamp = result[aggregate][result[aggregate].length - 1].timestamp / 1000;
+                result.push({level:aggregate,data:add_result});
+                last_timestamp = add_result[add_result.length - 1].timestamp / 1000;
             }
         }
         return result;

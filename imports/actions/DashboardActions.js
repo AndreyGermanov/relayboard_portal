@@ -1,5 +1,7 @@
 import {Meteor} from 'meteor/meteor';
 import Store from '../store/Store';
+import moment from 'moment-timezone';
+import _ from 'lodash';
 
 var DashboardActions = class {
 
@@ -79,8 +81,24 @@ var DashboardActions = class {
                     series:props.settings.series,
                     dateStart:props.settings.dateStart.unix()*1000,
                     dateEnd:props.settings.dateEnd.unix()*1000
-                }, function(err,result) {
-                    if (!err && result) {
+                }, function(err,records) {
+                    if (!err && records) {
+                        var result = [];
+                        for (var i in records) {
+                            var start_timestamp = records[i].data[0].timestamp;
+                            var end_timestamp = records[i].data[records[i].data.length-1].timestamp;
+                            var previous_item = 0;
+                            for (var current_timestamp=start_timestamp;current_timestamp<=end_timestamp;current_timestamp+=records[i].level*1000) {
+                                var item = _.find(records[i].data,{timestamp:current_timestamp});
+                                if (item) {
+                                    result.push(_.cloneDeep(item));
+                                    previous_item = _.cloneDeep(item);
+                                } else {
+                                    previous_item.timestamp = current_timestamp;
+                                    result.push(_.cloneDeep(previous_item));
+                                }
+                            }
+                        }
                         dispatch(self.updateSensorData(props.relayboard_id,props.number,result));
                     } else {
                         console.log(err);
@@ -104,7 +122,7 @@ var DashboardActions = class {
             type: this.types.SET_TERMINAL_COMMAND,
             relayboard_id: relayboard_id,
             command: command
-        }
+        };
     }
 
     addLinesToTerminalBuffer(relayboard_id,lines) {
@@ -112,14 +130,14 @@ var DashboardActions = class {
             type: this.types.ADD_LINES_TO_TERMINAL_BUFFER,
             relayboard_id: relayboard_id,
             lines: lines
-        }
+        };
     }
 
     clearTerminalBuffer(relayboard_id) {
         return {
             type: this.types.CLEAR_TERMINAL_BUFFER,
             relayboard_id: relayboard_id
-        }
+        };
     }
 
     sendTerminalCommand(relayboard_id) {
@@ -130,7 +148,7 @@ var DashboardActions = class {
             Meteor.call('execCommand', {id:relayboard_id,command:state.terminal_command}, function(err,result) {
                 dispatch(self.setTerminalCommand(relayboard_id,''));
             });
-        }
+        };
     }
 };
 

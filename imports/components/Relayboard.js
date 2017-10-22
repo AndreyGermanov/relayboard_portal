@@ -16,7 +16,7 @@ const Relayboard = class extends Entity {
             relay_columns = relayboard.config.pins.map(function (relay, index) {
                 var status = 0;
                 if (relay.type == 'temperature') {
-                    status = '0|0'
+                    status = '0|0';
                 }
                 var timestamp = relayboard.status_timestamp;
                 if (relayboard_status && typeof(relayboard_status[parseInt(relay.number)]) != 'undefined') {

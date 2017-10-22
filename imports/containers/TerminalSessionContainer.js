@@ -7,8 +7,8 @@ const mapStateToProps = (state,ownProps) => {
     return {
         command: ownProps.relayboard.terminal_command,
         buffer: ownProps.relayboard.terminal_buffer.join('<br/>')
-    }
-}
+    };
+};
 
 const mapDispatchToProps = (dispatch,ownProps) => {
     return {
@@ -19,10 +19,10 @@ const mapDispatchToProps = (dispatch,ownProps) => {
             }
         },
         onCommandChange: (e) => {
-            dispatch(actions.setTerminalCommand(ownProps.relayboard._id,e.target.value))
+            dispatch(actions.setTerminalCommand(ownProps.relayboard._id,e.target.value));
         }
-    }
-}
+    };
+};
 
 const TerminalSessionContainer = connect(mapStateToProps,mapDispatchToProps)(TerminalSession);
 

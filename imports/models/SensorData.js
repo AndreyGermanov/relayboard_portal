@@ -45,20 +45,20 @@ const updateAggregates = () => {
 
                 switch (sensor.type) {
                     case 'temperature':
-                        fields_to_get['temperature_avg'] = {$avg:'$temperature_avg'};
-                        fields_to_get['temperature_min'] = {$avg:'$temperature_min'};
-                        fields_to_get['temperature_max'] = {$avg:'$temperature_max'};
-                        fields_to_get['humidity_avg'] = {$avg:'$humidity_avg'};
-                        fields_to_get['humidity_min'] = {$avg:'$humidity_min'};
-                        fields_to_get['humidity_max'] = {$avg:'$humidity_max'};
-                        fields_to_insert['temperature_avg'] = fields_to_insert['temperature_min'] = fields_to_insert['temperature_max'] = 1;
-                        fields_to_insert['humidity_avg'] = fields_to_insert['humidity_min'] = fields_to_insert['humidity_max'] = 1;
+                        fields_to_get.temperature_avg = {$avg:'$temperature_avg'};
+                        fields_to_get.temperature_min = {$avg:'$temperature_min'};
+                        fields_to_get.temperature_max = {$avg:'$temperature_max'};
+                        fields_to_get.humidity_avg = {$avg:'$humidity_avg'};
+                        fields_to_get.humidity_min = {$avg:'$humidity_min'};
+                        fields_to_get.humidity_max = {$avg:'$humidity_max'};
+                        fields_to_insert.temperature_avg = fields_to_insert.temperature_min = fields_to_insert.temperature_max = 1;
+                        fields_to_insert.humidity_avg = fields_to_insert.humidity_min = fields_to_insert.humidity_max = 1;
                         break;
                     case 'relay':
-                        fields_to_get['status_avg'] = {$avg:'$status_avg'};
-                        fields_to_get['status_min'] = {$avg:'$status_min'};
-                        fields_to_get['status_max'] = {$avg:'$status_max'};
-                        fields_to_insert['status_avg'] = fields_to_insert['status_min'] = fields_to_insert['status_max'] = 1;
+                        fields_to_get.status_avg = {$avg:'$status_avg'};
+                        fields_to_get.status_min = {$avg:'$status_min'};
+                        fields_to_get.status_max = {$avg:'$status_max'};
+                        fields_to_insert.status_avg = fields_to_insert.status_min = fields_to_insert.status_max = 1;
                         break;
                     default:
                 }
@@ -103,7 +103,7 @@ const updateAggregates = () => {
                                     {
                                         $multiply: [
                                             {
-                                                $floor:
+                                                $ceil:
                                                 {
                                                     $divide:
                                                         [
@@ -115,7 +115,6 @@ const updateAggregates = () => {
                                         ]
                                     },
                                     ...fields_to_insert
-
                                 }
                             },
                             {
@@ -130,6 +129,11 @@ const updateAggregates = () => {
                             if (result) {
                                 for (var i in result) {
                                     var record = _.cloneDeep(result[i]);
+                                    for (var field_name in fields_to_get) {
+                                        if (field_name != '_id') {
+                                            record[field_name] = parseFloat(record[field_name].toFixed(2));
+                                        }
+                                    }
                                     var record = {
                                         relayboard_id: relayboard.id,
                                         sensor_id: sensor.number,

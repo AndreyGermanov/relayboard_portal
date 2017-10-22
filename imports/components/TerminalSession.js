@@ -3,6 +3,7 @@ import React,{Component} from 'react';
 const TerminalSession = class extends Component {
     render() {
         return (
+            /*jshint ignore:start */
             <div>
                 <div>
                     <pre ref={(item) => { this.terminal_area = item;}}className="terminalSession" dangerouslySetInnerHTML={{__html:this.props.buffer}}></pre>
@@ -12,7 +13,8 @@ const TerminalSession = class extends Component {
                        onChange={this.props.onCommandChange.bind(this)}
                 />
             </div>
-        )
+            /*jshint ignore:end */
+        );
     }
 
     componentDidUpdate(prevProps,prevState) {
@@ -20,6 +22,6 @@ const TerminalSession = class extends Component {
             this.terminal_area.scrollTop = this.terminal_area.scrollHeight - this.terminal_area.clientHeight;
         }
     }
-}
+};
 
 export default TerminalSession;
