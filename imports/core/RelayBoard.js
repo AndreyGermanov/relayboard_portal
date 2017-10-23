@@ -208,14 +208,13 @@ var RelayBoard = class extends EventEmitter {
             }
         );
 
-        result.push(
-            {
-                level:start_aggregate,
-                data: add_result
-            }
-        );
-
         if (add_result && add_result.length) {
+            result.push(
+                {
+                    level: start_aggregate,
+                    data: add_result
+                }
+            );
             var last_timestamp = add_result[add_result.length - 1].timestamp / 1000;
         } else {
             last_timestamp = 0;
@@ -249,7 +248,6 @@ var RelayBoard = class extends EventEmitter {
                     }
                 ]
             };
-
             var add_result = await SensorData[aggregate].aggregate(
                 [
                     {
@@ -266,7 +264,6 @@ var RelayBoard = class extends EventEmitter {
                     cursor: {batchSize: 1000}
                 }
             );
-
             if (add_result && add_result.length) {
                 result.push({level:aggregate,data:add_result});
                 last_timestamp = add_result[add_result.length - 1].timestamp / 1000;

@@ -3,6 +3,7 @@ import {Meteor} from 'meteor/meteor';
 import data_config from '../../imports/config/data';
 import async from 'async';
 import Application from '../core/Application';
+import moment from 'moment-timezone';
 import _ from 'lodash';
 
 Mongo.Collection.prototype.aggregate = function(pipelines, options) {
@@ -42,7 +43,6 @@ const updateAggregates = () => {
                 var fields_to_get = {_id: '$aggregate_number'},
                     fields_to_insert = {};
 
-
                 switch (sensor.type) {
                     case 'temperature':
                         fields_to_get.temperature_avg = {$avg:'$temperature_avg'};
@@ -76,11 +76,20 @@ const updateAggregates = () => {
                                 sort:{'timestamp':-1},
                                 limit:1
                             }
-                        ).fetch()[0];
+                        ).fetch();
+
+                        if (result && result.length) {
+                            result = result[0];
+                        } else {
+                            result = [];
+                        }
 
                         if (result && result.timestamp) {
                             last_timestamp = result.timestamp;
-                        }
+                        } else {
+                            last_timestamp = 0;
+                        };
+
                         callback();
                     },
                     function(callback) {
