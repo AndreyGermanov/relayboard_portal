@@ -121,7 +121,7 @@ var DashboardReducer = (state,action) => {
                             current_status.humidity = parseFloat(status_parts.pop());
                         }
                         if (relayboard.config.pins[i1].number == relayboard.current_relay) {
-                            if (relayboard.live_sensor_data[relayboard.config.pins[i1].number] > 100) {
+                            if (relayboard.live_sensor_data[relayboard.config.pins[i1].number].length > 50) {
                                 relayboard.live_sensor_data[relayboard.config.pins[i1].number].shift();
                             }
                             relayboard.live_sensor_data[relayboard.config.pins[i1].number].push(current_status);
