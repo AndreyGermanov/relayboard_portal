@@ -3,6 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import {connect} from 'react-redux';
 import RelayboardModel from '../models/RelayBoard';
 import Dashboard from '../components/Dashboard';
+import actions from '../actions/DashboardActions';
 import Store from '../store/Store';
 
 const mapStateToProps = (state,ownProps) => {
@@ -15,6 +16,9 @@ const mapStateToProps = (state,ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        onMouseUp: () => {
+            dispatch(actions.dashboardMouseUp());
+        }
     };
 };
 

@@ -37,6 +37,19 @@ var RootReducer = (state,action) => {
                 newState.userMenuVisible = action.value;
             }
             break;
+        case AppActions.types.MOUSE_UP:
+            for (var relayboard_id in newState.Dashboard.relayboards) {
+                for (var number in newState.Dashboard.relayboards[relayboard_id].relaySettings) {
+                    if (!newState.Dashboard.relayboards[relayboard_id].relaySettings[number]) {
+                        newState.Dashboard.relayboards[relayboard_id].relaySettings[number] = {
+                            mousedown:false
+                        }
+                    } else {
+                        newState.Dashboard.relayboards[relayboard_id].relaySettings[number].mousedown = false;
+                    }
+                }
+            }
+            break;
     }
     return newState;
 };

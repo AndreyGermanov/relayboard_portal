@@ -7,17 +7,28 @@ const Relay = class extends Entity {
         if (this.props.config.type == 'relay') {
             var command = 'ON',
                 color = 'red';
+            if (this.props.settings && this.props.settings.mousedown) {
+                color = 'darkred';
+            } else {
+                color = 'red';
+            }
             /*jshint ignore:start */
             var link = <span title='NO CONNECTION' className="fa fa-power-off relay-cell-img" style={{color:'gray'}}></span>
             /*jshint ignore:end */
             if (this.props.status == 1) {
                 command = 'OFF';
-                color = 'green';
+                if (this.props.settings && this.props.settings.mousedown) {
+                    color = 'darkgreen';
+                } else {
+                    color = 'green';
+                }
             }
             if (this.props.online && this.props.connected) {
                 /*jshint ignore:start */
                 link = <a key={'link_'+this.props.relayboard_id+'_'+this.props.config.number}>
                     <span onClick={this.props.onRelayClick.bind(this,this.props.relayboard_id,command,this.props.config.number)}
+                          onMouseDown={this.props.onRelayMouseDown.bind(this,this.props.relayboard_id,this.props.config.number)}
+                          onMouseUp={this.props.onRelayMouseUp.bind(this,this.props.relayboard_id,this.props.config.number)}
                           key={'img_'+this.props.config.number}
                           className="fa fa-power-off relay-cell-img relay-cell-img-online"
                           style={{color:color}}></span>

@@ -20,7 +20,7 @@ const Dashboard = class extends Entity {
 
             return (
                 /*jshint ignore:start */
-                <div>
+                <div onMouseUp={this.props.onMouseUp.bind(this)}>
                     <div className="flexbox">
                         {relayboards}
                     </div>

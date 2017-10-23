@@ -88,6 +88,7 @@ var DashboardReducer = (state,action) => {
                     }
                     relayboard.live_sensor_data = _.cloneDeep(newState.relayboards[relayboard._id].live_sensor_data);
                     relayboard.relayChartSettings = _.cloneDeep(newState.relayboards[relayboard._id].relayChartSettings);
+                    relayboard.relaySettings = _.cloneDeep(newState.relayboards[relayboard._id].relaySettings);
                     relayboard.current_relay = newState.relayboards[relayboard._id].current_relay;
                     relayboard.sensor_data = newState.relayboards[relayboard._id].sensor_data;
                     if (relayboard.buffer && relayboard.buffer.length && !_.isEqual(relayboard.buffer,newState.relayboards[relayboard._id].prev_buffer)) {
@@ -136,6 +137,7 @@ var DashboardReducer = (state,action) => {
                     relayboard.terminal_buffer = [];
                     relayboard.sensor_data = {};
                     relayboard.current_relay = null;
+                    relayboard.relaySettings = {};
                 }
                 newState.relayboards[relayboard._id] = relayboard;
             }
@@ -181,6 +183,37 @@ var DashboardReducer = (state,action) => {
         case actions.types.CLEAR_TERMINAL_BUFFER:
             if (newState.relayboards[action.relayboard_id]) {
                 newState.relayboards[action.relayboard_id].terminal_buffer = [];
+            }
+            break;
+        case actions.types.RELAY_MOUSE_DOWN:
+            var relayboard = newState.relayboards[action.relayboard_id];
+            if (relayboard) {
+                if (!relayboard.relaySettings[action.number]) {
+                    newState.relayboards[action.relayboard_id].relaySettings[action.number] = {};
+                }
+                newState.relayboards[action.relayboard_id].relaySettings[action.number].mousedown = true;
+            }
+            break;
+        case actions.types.RELAY_MOUSE_UP:
+            var relayboard = newState.relayboards[action.relayboard_id];
+            if (relayboard) {
+                if (!relayboard.relaySettings[action.number]) {
+                    newState.relayboards[action.relayboard_id].relaySettings[action.number] = {};
+                }
+                newState.relayboards[action.relayboard_id].relaySettings[action.number].mousedown = false;
+            }
+            break;
+        case actions.types.DASHBOARD_MOUSE_UP:
+            for (var relayboard_id in newState.relayboards) {
+                for (var number in newState.relayboards[relayboard_id].relaySettings) {
+                    if (!newState.relayboards[relayboard_id].relaySettings[number]) {
+                        newState.relayboards[relayboard_id].relaySettings[number] = {
+                            mousedown:false
+                        }
+                    } else {
+                        newState.relayboards[relayboard_id].relaySettings[number].mousedown = false;
+                    }
+                }
             }
             break;
         default:

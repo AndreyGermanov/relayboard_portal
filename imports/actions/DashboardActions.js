@@ -16,7 +16,10 @@ var DashboardActions = class {
             SET_RELAY_CHART_DATE_END: 'SET_RELAY_CHART_DATE_END',
             SET_TERMINAL_COMMAND: 'SET_TERMINAL_COMMAND',
             ADD_LINES_TO_TERMINAL_BUFFER: 'ADD_LINES_TO_TERMINAL_BUFFER',
-            CLEAR_TERMINAL_BUFFER: 'CLEAR_TERMINAL_BUFFER'
+            CLEAR_TERMINAL_BUFFER: 'CLEAR_TERMINAL_BUFFER',
+            RELAY_MOUSE_DOWN: 'RELAY_MOUSE_DOWN',
+            RELAY_MOUSE_UP: 'RELAY_MOUSE_UP',
+            DASHBOARD_MOUSE_UP: 'DASHBOARD_MOUSE_UP'
         };
     }
 
@@ -149,6 +152,28 @@ var DashboardActions = class {
                 dispatch(self.setTerminalCommand(relayboard_id,''));
             });
         };
+    }
+
+    relayMouseDown(relayboard_id,number) {
+        return {
+            type: this.types.RELAY_MOUSE_DOWN,
+            relayboard_id: relayboard_id,
+            number: number
+        };
+    }
+
+    relayMouseUp(relayboard_id,number) {
+        return {
+            type: this.types.RELAY_MOUSE_UP,
+            relayboard_id: relayboard_id,
+            number: number
+        };
+    }
+
+    dashboardMouseUp() {
+        return {
+            type: this.types.DASHBOARD_MOUSE_UP
+        }
     }
 };
 

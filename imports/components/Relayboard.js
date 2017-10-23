@@ -33,6 +33,7 @@ const Relayboard = class extends Entity {
                                        relayboard_id={relayboard._id}
                                        online={relayboard.online}
                                        connected={relayboard.connected}
+                                       settings={relayboard.relaySettings[relay.number]}
                 />
                 /*jshint ignore:end */
             });

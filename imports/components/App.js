@@ -22,7 +22,7 @@ var App = class extends Entity {
                 return (
                     /*jshint ignore:start */
                     <Router history={browserHistory}>
-                        <main onClick={this.props.onBodyClick.bind(this)}>
+                        <main style={{height:'100%'}} onClick={this.props.onBodyClick.bind(this)} onMouseUp={this.props.onBodyMouseUp.bind(this)}>
                             <aside className="al-sidebar"
                                    style={{display: this.props.sideMenuVisible && this.props.user.role == 'admin' ? '' : 'none'}}>
                                 <ul className="al-sidebar-list">

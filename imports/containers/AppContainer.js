@@ -31,6 +31,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         onBodyClick: () => {
             dispatch(actions.toggleUserMenu(false));
+        },
+        onBodyMouseUp: () => {
+            dispatch(actions.mouseUp());
         }
     };
 };

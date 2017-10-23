@@ -12,7 +12,8 @@ const mapStateToProps = (state,ownProps) => {
         index: ownProps.index,
         online: ownProps.online,
         connected: ownProps.connected,
-        timestamp: ownProps.timestamp ? moment(ownProps.timestamp).format('HH:mm:ss') : ''
+        timestamp: ownProps.timestamp ? moment(ownProps.timestamp).format('HH:mm:ss') : '',
+        settings: ownProps.settings
     };
 };
 
@@ -24,7 +25,13 @@ const mapDispatchToProps = (dispatch) => {
         },
         onRelayChartButtonClick: (relayboard_id,number) => {
             dispatch(dashboardActions.setCurrentRelayboardChart(relayboard_id,number));
-        }
+        },
+        onRelayMouseDown: (relayboard_id,number) => {
+            dispatch(dashboardActions.relayMouseDown(relayboard_id,number));
+        },
+        onRelayMouseUp: (relayboard_id,number) => {
+            dispatch(dashboardActions.relayMouseUp(relayboard_id,number));
+        },
     };
 };
 
