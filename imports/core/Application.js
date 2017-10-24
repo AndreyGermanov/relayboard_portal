@@ -5,7 +5,6 @@ import RelayBoard from './RelayBoard';
 import RelayBoardsDB  from '../models/RelayBoard';
 import Users from './Users';
 import _ from 'lodash';
-import async from 'async';
 
 const Application = class extends EventEmitter {
     constructor() {
@@ -54,7 +53,6 @@ const Application = class extends EventEmitter {
         });
         var methods = {
             registerRelayBoard: (params) => {
-                console.log(params);
                 if (Meteor.userId()) {
                     var id = params.id;
                     if (!this.relayboards[id] || typeof(this.relayboards[id]) == 'undefined') {
